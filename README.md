@@ -1,7 +1,7 @@
 # DemoKin: Matrix-based Kinship Models
 
-[![R-CMD-check](https://github.com/yourusername/DemoKin/workflows/R-CMD-check/badge.svg)](https://github.com/yourusername/DemoKin/actions)
-[![pkgdown](https://github.com/yourusername/DemoKin/workflows/pkgdown/badge.svg)](https://github.com/yourusername/DemoKin/actions)
+[![R-CMD-check](https://github.com/shajiang93/DemoKin_web/workflows/R-CMD-check/badge.svg)](https://github.com/shajiang93/DemoKin_web/actions)
+[![pkgdown](https://github.com/shajiang93/DemoKin_web/workflows/pkgdown/badge.svg)](https://github.com/shajiang93/DemoKin_web/actions)
 
 DemoKin is an R package for the demographic analysis of kinship networks using matrix-based models. It implements methods developed by Caswell and colleagues for estimating the number and age distribution of relatives under various demographic assumptions.
 
@@ -19,7 +19,7 @@ You can install the development version of DemoKin from GitHub:
 
 ```r
 # install.packages("remotes")
-remotes::install_github("yourusername/DemoKin")
+remotes::install_github("shajiang93/DemoKin_web")
 ```
 
 ## Usage
@@ -51,19 +51,19 @@ kin_results$kin_summary %>%
 
 ## Documentation
 
-For detailed documentation, please visit the [DemoKin website](https://yourusername.github.io/DemoKin/).
+For detailed documentation, please visit the [DemoKin website](https://shajiang93.github.io/DemoKin_web/).
 
 The site includes several vignettes demonstrating different types of kinship models:
 
 ### Models stratified by age
-- [One-sex time-invariant kinship model](https://yourusername.github.io/DemoKin/articles/1_1_OneSex_TimeInvariant_Age.html)
-- [One-sex time-varying kinship model](https://yourusername.github.io/DemoKin/articles/1_2_OneSex_TimeVarying_Age.html)
-- [Two-sex time-invariant kinship model](https://yourusername.github.io/DemoKin/articles/1_3_TwoSex_TimeInvariant_Age.html)
-- [Two-sex time-varying kinship model](https://yourusername.github.io/DemoKin/articles/1_4_TwoSex_TimeVarying_Age.html)
+- [One-sex time-invariant kinship model](https://shajiang93.github.io/DemoKin_web/articles/1_1_OneSex_TimeInvariant_Age.html)
+- [One-sex time-varying kinship model](https://shajiang93.github.io/DemoKin_web/articles/1_2_OneSex_TimeVarying_Age.html)
+- [Two-sex time-invariant kinship model](https://shajiang93.github.io/DemoKin_web/articles/1_3_TwoSex_TimeInvariant_Age.html)
+- [Two-sex time-varying kinship model](https://shajiang93.github.io/DemoKin_web/articles/1_4_TwoSex_TimeVarying_Age.html)
 
 ### Models stratified by age and stage
-- [One-sex time-invariant multi-state model](https://yourusername.github.io/DemoKin/articles/2_1_OneSex_TimeInvariant_AgeStage.html)
-- [Two-sex time-varying multi-state model](https://yourusername.github.io/DemoKin/articles/2_2_TwoSex_TimeVarying_AgeStage.html)
+- [One-sex time-invariant multi-state model](https://shajiang93.github.io/DemoKin_web/articles/2_1_OneSex_TimeInvariant_AgeStage.html)
+- [Two-sex time-varying multi-state model](https://shajiang93.github.io/DemoKin_web/articles/2_2_TwoSex_TimeVarying_AgeStage.html)
 
 ## References
 

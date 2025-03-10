@@ -10,45 +10,52 @@ template:
 
 navbar:
   structure:
-    left: [home, reference, age_models, stage_models]
+    left: [home, age_models, stage_models, reference]
     right: [github]
   components:
     home:
       icon: fas fa-home fa-lg
       href: index.html
+    age_models:
+      text: "Models by Age"
+      menu:
+      - text: "One-sex time-invariant model"
+        href: articles/1_1_OneSex_TimeInvariant_Age.html
+      - text: "One-sex time-varying model"
+        href: articles/1_2_OneSex_TimeVarying_Age.html
+      - text: "Two-sex time-invariant model"
+        href: articles/1_3_TwoSex_TimeInvariant_Age.html
+      - text: "Two-sex time-varying model"
+        href: articles/1_4_TwoSex_TimeVarying_Age.html
+    stage_models:
+      text: "Models by Age and Stage"
+      menu:
+      - text: "One-sex time-invariant model"
+        href: articles/2_1_OneSex_TimeInvariant_AgeStage.html
+      - text: "Two-sex time-varying model"
+        href: articles/2_2_TwoSex_TimeVarying_AgeStage.html
     reference:
       text: Reference
       href: reference/index.html
-    age_models:
-      text: "Age-based Models"
-      menu:
-      - text: "One-sex time-invariant kinship model"
-        href: articles/1_1_OneSex_TimeInvariant_Age.html
-      - text: "One-sex time-varying kinship model"
-        href: articles/1_2_OneSex_TimeVarying_Age.html
-      - text: "Two-sex time-invariant kinship model"
-        href: articles/1_3_TwoSex_TimeInvariant_Age.html
-      - text: "Two-sex time-varying kinship model"
-        href: articles/1_4_TwoSex_TimeVarying_Age.html
-    stage_models:
-      text: "Age-Stage Models"
-      menu:
-      - text: "One-sex time-invariant with stage"
-        href: articles/2_1_OneSex_TimeInvariant_AgeStage.html
-      - text: "Two-sex time-varying with stage"
-        href: articles/2_2_TwoSex_TimeVarying_AgeStage.html
     github:
       icon: fab fa-github fa-lg
       href: https://github.com/shajiang93/DemoKin_web
 
+reference:
+  - title: References
+    contents:
+      - '`vignettes/references.bib`'
+
 articles:
-  - title: "Age-based Models"
+  - title: "Models by Age"
     contents:
       - 1_1_OneSex_TimeInvariant_Age
       - 1_2_OneSex_TimeVarying_Age
       - 1_3_TwoSex_TimeInvariant_Age
       - 1_4_TwoSex_TimeVarying_Age
-  - title: "Age-Stage Models"
+  - title: "Models by Age and Stage"
     contents:
       - 2_1_OneSex_TimeInvariant_AgeStage
       - 2_2_TwoSex_TimeVarying_AgeStage
+
+    
