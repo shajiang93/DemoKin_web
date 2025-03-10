@@ -23,6 +23,8 @@ Imports:
     ggplot2,
     Matrix,
     stats
+Remotes: 
+    github::IvanWilli/DemoKin
 Suggests: 
     knitr,
     rmarkdown,
