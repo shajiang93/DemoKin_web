@@ -2,9 +2,7 @@
 title: "One-sex time-varying kinship model specified by age"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{
-One-sex time-varying kinship model specified by age
-}
+  %\VignetteIndexEntry{One-sex time-varying kinship model specified by age}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
