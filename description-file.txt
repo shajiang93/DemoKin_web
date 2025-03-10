@@ -1,0 +1,32 @@
+Package: DemoKin
+Title: Matrix-Based Kinship Models for Demographic Analysis
+Version: 0.1.0
+Authors@R: 
+    person(given = "Your",
+           family = "Name",
+           role = c("aut", "cre"),
+           email = "your.email@example.com")
+Description: Tools for demographic analysis of kinship networks using matrix-based 
+    models. DemoKin implements a range of methods for estimating kin counts, 
+    age distributions, and other family structure dynamics under various 
+    demographic assumptions. The package includes functions for one-sex and 
+    two-sex models, time-invariant and time-varying approaches, and can 
+    incorporate additional dimensions like parity or educational attainment.
+License: MIT + file LICENSE
+Encoding: UTF-8
+LazyData: true
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.1.2
+Imports: 
+    dplyr,
+    tidyr,
+    ggplot2,
+    Matrix,
+    stats
+Suggests: 
+    knitr,
+    rmarkdown,
+    testthat
+VignetteBuilder: knitr
+URL: https://github.com/yourusername/DemoKin
+BugReports: https://github.com/yourusername/DemoKin/issues

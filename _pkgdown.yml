@@ -1,0 +1,89 @@
+url: https://yourusername.github.io/DemoKin/
+
+home:
+  title: DemoKin - Matrix-based Kinship Models
+  description: >
+    An R package for demographic analysis of kinship networks using 
+    matrix-based models. DemoKin implements a range of methods for 
+    estimating kin counts, age distributions, and other family structure 
+    dynamics under various demographic assumptions.
+
+template:
+  bootstrap: 4
+  bootswatch: flatly
+  bslib:
+    primary: "#0054AD"
+    border-radius: 0.5rem
+    btn-border-radius: 0.25rem
+
+navbar:
+  structure:
+    left:  [home, intro, reference, articles, tutorials, news]
+    right: [github]
+  components:
+    home:
+      icon: fas fa-home fa-lg
+      href: index.html
+    reference:
+      text: Reference
+      href: reference/index.html
+    github:
+      icon: fab fa-github fa-lg
+      href: https://github.com/yourusername/DemoKin
+    articles:
+      text: Vignettes
+      menu:
+      - text: "Model stratified by age"
+        menu:
+          - text: "One-sex time-invariant kinship model specified by age"
+            href: articles/1_1_OneSex_TimeInvariant_Age.html
+          - text: "One-sex time-varying kinship model specified by age"
+            href: articles/1_2_OneSex_TimeVarying_Age.html
+          - text: "Two-sex time-invariant kinship model specified by age"
+            href: articles/1_3_TwoSex_TimeInvariant_Age.html
+          - text: "Two-sex time-varying kinship model specified by age"
+            href: articles/1_4_TwoSex_TimeVarying_Age.html
+      - text: "Model stratified by age and stage"
+        menu:
+          - text: "One-sex time-invariant kinship model specified by age and stage"
+            href: articles/2_1_OneSex_TimeInvariant_AgeStage.html
+          - text: "Two-sex time-varying kinship model specified by age and stage"
+            href: articles/2_2_TwoSex_TimeVarying_AgeStage.html
+
+articles:
+  - title: "Model stratified by age"
+    desc: >
+      Kinship models where demographic processes depend only on age
+    contents:
+      - 1_1_OneSex_TimeInvariant_Age
+      - 1_2_OneSex_TimeVarying_Age
+      - 1_3_TwoSex_TimeInvariant_Age
+      - 1_4_TwoSex_TimeVarying_Age
+  - title: "Model stratified by age and stage"
+    desc: >
+      Kinship models where demographic processes depend on both age and stage
+    contents:
+      - 2_1_OneSex_TimeInvariant_AgeStage
+      - 2_2_TwoSex_TimeVarying_AgeStage
+
+reference:
+  - title: "Main Functions"
+    desc: >
+      Core functions for kinship calculations
+    contents:
+      - kin
+      - kin2sex
+      - kin_multi_stage
+  - title: "Visualization Functions"
+    desc: >
+      Functions for visualizing kinship structures
+    contents:
+      - plot_diagram
+      - rename_kin
+  - title: "Data"
+    desc: >
+      Example datasets included with the package
+    contents:
+      - demokin_codes
+      - swe_px
+      - swe_asfr
