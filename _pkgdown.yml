@@ -10,7 +10,7 @@ template:
 
 navbar:
   structure:
-    left: [home, age_models, stage_models, reference]
+    left: [home, age_models, stage_models]
     right: [github]
   components:
     home:
@@ -34,17 +34,9 @@ navbar:
         href: articles/2_1_OneSex_TimeInvariant_AgeStage.html
       - text: "Two-sex time-varying model"
         href: articles/2_2_TwoSex_TimeVarying_AgeStage.html
-    reference:
-      text: Reference
-      href: reference/index.html
     github:
       icon: fab fa-github fa-lg
       href: https://github.com/shajiang93/DemoKin_web
-
-reference:
-  - title: References
-    contents:
-      - '`vignettes/references.bib`'
 
 articles:
   - title: "Models by Age"
