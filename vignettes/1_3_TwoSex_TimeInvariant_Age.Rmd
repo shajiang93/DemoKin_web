@@ -137,6 +137,9 @@ These differences affect kinship structures in several important ways:
 For our example, we'll use data from France (2012), which is included in the `DemoKin` package. Let's examine the sex-specific mortality and fertility rates:
 
 ```{r sex_differences}
+data(fra_asfr_sex, package = "DemoKin")
+data(fra_surv_sex, package = "DemoKin")
+
 # Extract sex-specific rates
 fra_fert_f <- fra_asfr_sex[,"ff"]    # Female fertility rates
 fra_fert_m <- fra_asfr_sex[,"fm"]    # Male fertility rates

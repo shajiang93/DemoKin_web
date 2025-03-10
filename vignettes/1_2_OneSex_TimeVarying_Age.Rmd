@@ -154,6 +154,10 @@ The `DemoKin` package includes Swedish data in this format, which we'll use for 
 Let's implement a time-varying kinship model for women born in 1960 in Sweden. We'll focus on specific kin types to make interpretation easier:
 
 ```{r}
+data(swe_px, package = "DemoKin")
+data(swe_asfr, package = "DemoKin")
+data(swe_pop, package = "DemoKin")
+
 swe_time_varying <- 
   kin(
     p = swe_px,              # Matrix of survival probabilities by age and year

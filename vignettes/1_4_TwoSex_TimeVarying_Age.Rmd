@@ -139,6 +139,9 @@ For this vignette, we'll use Swedish demographic data from the `DemoKin` package
 In a real-world application, you would ideally use actual male rates. Here, we'll create male rates by applying transformations to the female rates:
 
 ```{r}
+data(swe_px, package = "DemoKin")
+data(swe_asfr, package = "DemoKin")
+
 # Extract dimensions of the data
 years <- ncol(swe_px)
 ages <- nrow(swe_px)
@@ -268,6 +271,8 @@ Let's evaluate these approximations using French data from the `DemoKin` package
 The androgynous approximation uses female rates for both sexes. Let's compare it to the full two-sex model:
 
 ```{r, message=FALSE, warning=FALSE}
+data(fra_asfr_sex, package = "DemoKin")
+data(fra_surv_sex, package = "DemoKin")
 # Load data of France again
 fra_fert_f <- fra_asfr_sex[,"ff"]    # Female fertility rates
 fra_fert_m <- fra_asfr_sex[,"fm"]    # Male fertility rates

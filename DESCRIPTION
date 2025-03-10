@@ -26,7 +26,8 @@ Imports:
 Suggests: 
     knitr,
     rmarkdown,
-    testthat
+    testthat,
+    pkgdown
 VignetteBuilder: knitr
-URL: https://github.com/yourusername/DemoKin
-BugReports: https://github.com/yourusername/DemoKin/issues
+URL: https://shajiang93.github.io/DemoKin_web/
+BugReports: https://github.com/shajiang93/DemoKin_web/issues
