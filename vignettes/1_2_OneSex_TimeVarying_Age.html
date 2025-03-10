@@ -1,0 +1,881 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>One-sex time-varying kinship model specified by age</title>
+
+<script src="libs/header-attrs-2.20/header-attrs.js"></script>
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="libs/bootstrap-3.3.5/css/readable.min.css" rel="stylesheet" />
+<script src="libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="libs/navigation-1.1/tabsets.js"></script>
+<script src="libs/navigation-1.1/codefolding.js"></script>
+<link href="libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet" />
+<script src="libs/pagedtable-1.1/js/pagedtable.js"></script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+
+
+<style type="text/css">
+  code {
+    white-space: pre;
+  }
+  .sourceCode {
+    overflow: visible;
+  }
+</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+
+.sourceCode .row {
+  width: 100%;
+}
+.sourceCode {
+  overflow-x: auto;
+}
+.code-folding-btn {
+  margin-right: -30px;
+}
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+<style type="text/css">
+/* for pandoc --citeproc since 2.11 */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+  margin-bottom: 0em;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
+</style>
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+.tocify-subheader {
+  display: inline;
+}
+.tocify-subheader .tocify-item {
+  font-size: 0.95em;
+}
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div id="header">
+
+<div class="btn-group pull-right float-right">
+<button type="button" class="btn btn-default btn-xs btn-secondary btn-sm dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu dropdown-menu-right" style="min-width: 50px;">
+<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
+<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
+</ul>
+</div>
+
+
+
+<h1 class="title toc-ignore">One-sex time-varying kinship model
+specified by age</h1>
+<h4 class="date">Updated: 2025-03-10</h4>
+
+</div>
+
+
+<style>
+/* Make TOC appear on the right side */
+.tocify {
+  position: fixed;
+  top: 50px;
+  right: 0;
+  width: 240px;
+  height: calc(100% - 50px);
+  overflow-y: auto;
+  margin-left: 0;
+  padding-left: 0;
+}
+
+/* Adjust main content to make room for right-side TOC */
+.main-container {
+  max-width: calc(100% - 260px);
+  margin-left: 10px;
+  margin-right: 250px;
+}
+
+/* Limit TOC to only show 2 levels */
+.tocify-subheader .tocify-subheader {
+  display: none;
+}
+
+/* Style for learning objectives box */
+.learning-objectives {
+  background-color: #e0f7fa;
+  border-left: 5px solid #00acc1;
+  padding: 15px;
+  margin-bottom: 20px;
+  border-radius: 3px;
+}
+</style>
+<div class="learning-objectives">
+<p><strong>Learning Objectives</strong>: In this vignette, you will
+learn how to extend the DemoKin time-invariant model to incorporate
+changing demographic rates over time. You will understand how to
+implement a time-varying kinship model, examine the impact of
+demographic change on kinship networks, and analyze related phenomena
+such as kin loss and prevalence of specific conditions among kin.</p>
+</div>
+<div id="introduction" class="section level1" number="1">
+<h1><span class="header-section-number">1</span> Introduction</h1>
+<p>Kinship is a fundamental property of human populations and a key form
+of social structure. While the time-invariant model we explored
+previously provides valuable insights, it has one significant
+limitation: it assumes that demographic rates remain constant over time.
+In reality, mortality and fertility rates change substantially across
+decades due to socioeconomic development, medical advances, and cultural
+shifts.</p>
+<p>The time-varying approach offers a more realistic picture of kinship
+dynamics by accounting for these historical demographic changes. This
+extension allows us to:</p>
+<ul>
+<li>Track kinship networks for specific birth cohorts across their life
+course</li>
+<li>Account for the different demographic conditions experienced by each
+generation</li>
+<li>Provide more accurate estimates of kin availability in specific
+historical periods</li>
+<li>Better understand how demographic transitions shape family
+structures</li>
+</ul>
+<p>In this vignette, we will implement a <strong>one-sex time-varying
+model</strong>, outlined in Caswell and Song <span
+class="citation">(2021)</span>, using the <code>DemoKin</code> package.
+We build on the time-invariant approach but incorporate year-specific
+mortality and fertility rates to model the kinship networks of
+individuals born in specific years.</p>
+<div id="preparation" class="section level2" number="1.1">
+<h2><span class="header-section-number">1.1</span> Package
+Installation</h2>
+<p>If you haven’t already installed the required packages from the
+previous vignette, here’s what you’ll need:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="co"># Install basic data analysis packages</span></span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a><span class="fu">rm</span>(<span class="at">list =</span> <span class="fu">ls</span>())</span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">&quot;dplyr&quot;</span>)     <span class="co"># Data manipulation</span></span>
+<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">&quot;tidyr&quot;</span>)     <span class="co"># Data tidying</span></span>
+<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">&quot;ggplot2&quot;</span>)   <span class="co"># Data visualization</span></span>
+<span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">&quot;readr&quot;</span>)     <span class="co"># Data import</span></span>
+<span id="cb1-7"><a href="#cb1-7" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">&quot;knitr&quot;</span>)     <span class="co"># Document generation</span></span>
+<span id="cb1-8"><a href="#cb1-8" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">&quot;data.table&quot;</span>)<span class="co"># Efficient data handling</span></span>
+<span id="cb1-9"><a href="#cb1-9" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">&quot;Matrix&quot;</span>)    <span class="co"># Matrix operations</span></span>
+<span id="cb1-10"><a href="#cb1-10" tabindex="-1"></a></span>
+<span id="cb1-11"><a href="#cb1-11" tabindex="-1"></a><span class="co"># Install DemoKin</span></span>
+<span id="cb1-12"><a href="#cb1-12" tabindex="-1"></a><span class="co"># DemoKin is available on CRAN (https://cran.r-project.org/web/packages/DemoKin/index.html), </span></span>
+<span id="cb1-13"><a href="#cb1-13" tabindex="-1"></a><span class="co"># but we&#39;ll use the development version on GitHub (https://github.com/IvanWilli/DemoKin):</span></span>
+<span id="cb1-14"><a href="#cb1-14" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">&quot;remotes&quot;</span>)</span>
+<span id="cb1-15"><a href="#cb1-15" tabindex="-1"></a>remotes<span class="sc">::</span><span class="fu">install_github</span>(<span class="st">&quot;IvanWilli/DemoKin&quot;</span>)</span></code></pre></div>
+</div>
+</div>
+<div id="load-packages" class="section level1" number="2">
+<h1><span class="header-section-number">2</span> Setting Up the Analysis
+Environment</h1>
+<p>Let’s load the necessary packages for our analysis:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="fu">library</span>(dplyr)    <span class="co"># For data manipulation</span></span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a><span class="fu">library</span>(tidyr)    <span class="co"># For restructuring data</span></span>
+<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a><span class="fu">library</span>(ggplot2)  <span class="co"># For visualization</span></span>
+<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a><span class="fu">library</span>(readr)    <span class="co"># For reading data</span></span>
+<span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a><span class="fu">library</span>(knitr)    <span class="co"># For document generation</span></span>
+<span id="cb2-6"><a href="#cb2-6" tabindex="-1"></a><span class="fu">library</span>(DemoKin)  <span class="co"># For kinship analysis</span></span></code></pre></div>
+<p>Load the utility functions we’ve prepared:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="fu">source</span>(<span class="st">&quot;functions.R&quot;</span>)</span></code></pre></div>
+</div>
+<div id="time-varying-models" class="section level1" number="3">
+<h1><span class="header-section-number">3</span> Time-Varying Kinship
+Models</h1>
+<div id="the-conceptual-shift" class="section level2" number="3.1">
+<h2><span class="header-section-number">3.1</span> The Conceptual
+Shift</h2>
+<p>In the time-invariant model, we assumed that everyone experiences the
+same mortality and fertility rates throughout their lives (e.g., the
+2015 rates). However, this is a simplification of reality. Demographic
+rates change over time, often dramatically:</p>
+<ul>
+<li>A woman born in 1900 would have experienced very different mortality
+risks at age 20 (in 1920) than a woman born in 1950 would have at age 20
+(in 1970)</li>
+<li>Similarly, fertility patterns have shifted substantially over
+generations</li>
+</ul>
+<p>Time-varying models account for these historical changes by using
+year-specific demographic rates. They provide a more realistic picture
+of kinship dynamics for specific birth cohorts as they age through
+changing demographic conditions.</p>
+</div>
+<div id="data-requirements" class="section level2" number="3.2">
+<h2><span class="header-section-number">3.2</span> Data
+Requirements</h2>
+<p>For time-varying models, instead of vectors of rates for a single
+year, we need:</p>
+<ol style="list-style-type: decimal">
+<li><p>A matrix of survival probabilities, with:</p>
+<ul>
+<li>Rows representing ages (0, 1, 2, …, 100+)</li>
+<li>Columns representing years (e.g., 1950, 1951, …, 2020)</li>
+</ul></li>
+<li><p>A matrix of fertility rates with the same dimensions</p></li>
+<li><p>A matrix of population counts (optional, for certain
+calculations)</p></li>
+</ol>
+<p>The <code>DemoKin</code> package includes Swedish data in this
+format, which we’ll use for our example.</p>
+</div>
+<div id="run-the-model-time-varying" class="section level2"
+number="3.3">
+<h2><span class="header-section-number">3.3</span> Implementing the
+Time-Varying Model</h2>
+<p>Let’s implement a time-varying kinship model for women born in 1960
+in Sweden. We’ll focus on specific kin types to make interpretation
+easier:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a>swe_time_varying <span class="ot">&lt;-</span> </span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a>  <span class="fu">kin</span>(</span>
+<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a>    <span class="at">p =</span> swe_px,              <span class="co"># Matrix of survival probabilities by age and year</span></span>
+<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a>    <span class="at">f =</span> swe_asfr,            <span class="co"># Matrix of fertility rates by age and year</span></span>
+<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a>    <span class="at">n =</span> swe_pop,             <span class="co"># Matrix of population counts by age and year</span></span>
+<span id="cb4-6"><a href="#cb4-6" tabindex="-1"></a>    <span class="at">time_invariant =</span> <span class="cn">FALSE</span>,  <span class="co"># Use time-varying model</span></span>
+<span id="cb4-7"><a href="#cb4-7" tabindex="-1"></a>    <span class="at">output_cohort =</span> <span class="dv">1960</span>,    <span class="co"># Focus on the 1960 birth cohort</span></span>
+<span id="cb4-8"><a href="#cb4-8" tabindex="-1"></a>    <span class="at">output_kin =</span> <span class="fu">c</span>(<span class="st">&quot;d&quot;</span>,<span class="st">&quot;gd&quot;</span>,<span class="st">&quot;ggd&quot;</span>,<span class="st">&quot;m&quot;</span>,<span class="st">&quot;gm&quot;</span>,<span class="st">&quot;ggm&quot;</span>)  <span class="co"># Select specific kin types</span></span>
+<span id="cb4-9"><a href="#cb4-9" tabindex="-1"></a>    )</span></code></pre></div>
+<p>In this model: - We use the full matrices of Swedish demographic data
+(<code>swe_px</code>, <code>swe_asfr</code>, <code>swe_pop</code>) - We
+set <code>time_invariant = FALSE</code> to implement a time-varying
+model - We specify <code>output_cohort = 1960</code> to focus on women
+born in 1960 - We select specific relatives to analyze (daughters,
+granddaughters, great-granddaughters, mothers, grandmothers, and
+great-grandmothers)</p>
+</div>
+<div id="living-relatives" class="section level2" number="3.4">
+<h2><span class="header-section-number">3.4</span> Living Relatives
+Across the Life Course</h2>
+<p>Let’s examine how the number of living kin changes throughout the
+life course for the 1960 birth cohort:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a>swe_time_varying<span class="sc">$</span>kin_summary <span class="sc">%&gt;%</span></span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(age_focal, count_living, <span class="at">color=</span><span class="fu">factor</span>(cohort))) <span class="sc">+</span></span>
+<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">name =</span> <span class="st">&quot;&quot;</span>, <span class="at">labels =</span> <span class="fu">seq</span>(<span class="dv">0</span>,<span class="dv">3</span>,.<span class="dv">2</span>), <span class="at">breaks =</span> <span class="fu">seq</span>(<span class="dv">0</span>,<span class="dv">3</span>,.<span class="dv">2</span>)) <span class="sc">+</span></span>
+<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">color =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="dv">35</span>, <span class="at">color=</span><span class="dv">2</span>) <span class="sc">+</span></span>
+<span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb5-7"><a href="#cb5-7" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">&quot;Expected number of living relatives for the 1960 birth cohort&quot;</span>,</span>
+<span id="cb5-8"><a href="#cb5-8" tabindex="-1"></a>    <span class="at">subtitle =</span> <span class="st">&quot;Swedish demographic rates, time-varying model&quot;</span>,</span>
+<span id="cb5-9"><a href="#cb5-9" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">&quot;Age of focal individual&quot;</span>,</span>
+<span id="cb5-10"><a href="#cb5-10" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">&quot;Expected number of living relatives&quot;</span></span>
+<span id="cb5-11"><a href="#cb5-11" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb5-12"><a href="#cb5-12" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>kin, <span class="at">scales =</span> <span class="st">&quot;free&quot;</span>) <span class="sc">+</span></span>
+<span id="cb5-13"><a href="#cb5-13" tabindex="-1"></a>  <span class="fu">theme_bw</span>()</span></code></pre></div>
+<p><img src="1_2_OneSex_TimeVarying_Age_files/figure-html/unnamed-chunk-2-1.png" style="display: block; margin: auto;" /></p>
+<p><strong>Interpretation</strong>: These plots show how the expected
+number of living relatives changes as the 1960 cohort ages:</p>
+<ul>
+<li><strong>Mothers (m)</strong>: Starts near 1.0 and gradually declines
+as mothers die</li>
+<li><strong>Grandmothers (gm)</strong>: Already well below 1.0 at birth,
+reflecting pre-1960 mortality, then declining rapidly</li>
+<li><strong>Great-grandmothers (ggm)</strong>: Very few at birth,
+quickly disappearing</li>
+<li><strong>Daughters (d)</strong>: Increasing during reproductive
+years, reflecting fertility patterns of the 1980s-1990s</li>
+<li><strong>Granddaughters (gd)</strong>: Appearing as daughters reach
+reproductive age, reflecting fertility of the 2000s-2010s</li>
+<li><strong>Great-granddaughters (ggd)</strong>: Beginning to appear in
+later years</li>
+</ul>
+<p>The red vertical line at age 35 provides a reference point to compare
+kin counts at a specific age. Unlike the time-invariant model, these
+counts reflect the actual historical demographic conditions experienced
+by this cohort and their relatives.</p>
+</div>
+<div id="kin-loss" class="section level2" number="3.5">
+<h2><span class="header-section-number">3.5</span> Analyzing Kin
+Loss</h2>
+<p>Beyond counting living kin, we can also examine patterns of kin
+mortality. Understanding kin loss is important because it: - Has
+psychological and social consequences for bereaved individuals - Affects
+the availability of support and care across generations - Influences
+patterns of inheritance and resource transfers</p>
+<p>Let’s examine the cumulative number of deceased relatives by age for
+our 1960 birth cohort:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a>swe_time_varying<span class="sc">$</span>kin_summary <span class="sc">%&gt;%</span></span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(age_focal, count_cum_dead)) <span class="sc">+</span></span>
+<span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb6-5"><a href="#cb6-5" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">&quot;Cumulative number of deceased relatives by age&quot;</span>,</span>
+<span id="cb6-6"><a href="#cb6-6" tabindex="-1"></a>    <span class="at">subtitle =</span> <span class="st">&quot;1960 birth cohort, Sweden&quot;</span>,</span>
+<span id="cb6-7"><a href="#cb6-7" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">&quot;Age of focal individual&quot;</span>,</span>
+<span id="cb6-8"><a href="#cb6-8" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">&quot;Expected number of deceased relatives&quot;</span></span>
+<span id="cb6-9"><a href="#cb6-9" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb6-10"><a href="#cb6-10" tabindex="-1"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span></span>
+<span id="cb6-11"><a href="#cb6-11" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>kin, <span class="at">scales=</span><span class="st">&quot;free&quot;</span>)</span></code></pre></div>
+<p><img src="1_2_OneSex_TimeVarying_Age_files/figure-html/unnamed-chunk-3-1.png" style="display: block; margin: auto;" /></p>
+<p><strong>Interpretation</strong>: These graphs show the cumulative
+number of deaths experienced by kin type:</p>
+<ul>
+<li><strong>Ascending relatives</strong>: Deaths accumulate gradually
+for mothers, and more rapidly for grandmothers and
+great-grandmothers</li>
+<li><strong>Descending relatives</strong>: Deaths are rare but do occur,
+representing the tragedy of losing children, grandchildren, or
+great-grandchildren</li>
+</ul>
+<p>We can also examine the mean age at which relatives die. For a
+50-year-old woman born in 1960:</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a>swe_time_varying<span class="sc">$</span>kin_summary <span class="sc">%&gt;%</span> </span>
+<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a>  <span class="fu">filter</span>(age_focal <span class="sc">==</span> <span class="dv">50</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a>  <span class="fu">select</span>(kin, count_cum_dead, mean_age_lost) <span class="sc">%&gt;%</span> </span>
+<span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a>  <span class="fu">mutate_if</span>(is.numeric, round, <span class="dv">2</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb7-5"><a href="#cb7-5" tabindex="-1"></a>  <span class="fu">kable</span>()</span></code></pre></div>
+<table>
+<thead>
+<tr class="header">
+<th align="left">kin</th>
+<th align="right">count_cum_dead</th>
+<th align="right">mean_age_lost</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">d</td>
+<td align="right">0.01</td>
+<td align="right">32.59</td>
+</tr>
+<tr class="even">
+<td align="left">gd</td>
+<td align="right">0.00</td>
+<td align="right">47.13</td>
+</tr>
+<tr class="odd">
+<td align="left">ggd</td>
+<td align="right">0.00</td>
+<td align="right">49.66</td>
+</tr>
+<tr class="even">
+<td align="left">ggm</td>
+<td align="right">0.22</td>
+<td align="right">8.94</td>
+</tr>
+<tr class="odd">
+<td align="left">gm</td>
+<td align="right">0.84</td>
+<td align="right">24.96</td>
+</tr>
+<tr class="even">
+<td align="left">m</td>
+<td align="right">0.32</td>
+<td align="right">37.83</td>
+</tr>
+</tbody>
+</table>
+<p>This table shows both the number of deceased relatives and the mean
+age at which they died. For example, by age 50, a woman born in 1960
+would have lost approximately 0.58 mothers at a mean age of 74.83
+years.</p>
+</div>
+<div id="prevelances" class="section level2" number="3.6">
+<h2><span class="header-section-number">3.6</span> Prevalence
+Calculations</h2>
+<p>Beyond simple counts, we can combine kinship data with prevalence
+rates by age to estimate the number of kin with specific
+characteristics. This approach, based on the Sullivan Method, allows us
+to:</p>
+<ul>
+<li>Estimate relatives with specific health conditions</li>
+<li>Calculate working-age vs. dependent kin</li>
+<li>Project care needs or support capacity within family networks</li>
+</ul>
+<p>Let’s create a hypothetical prevalence vector that increases
+exponentially with age (which might represent a condition like
+dementia):</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a><span class="co"># Create a prevalence vector that increases exponentially with age</span></span>
+<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a>swe_prevalence <span class="ot">&lt;-</span> </span>
+<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a>  <span class="fu">tibble</span>(</span>
+<span id="cb8-4"><a href="#cb8-4" tabindex="-1"></a>    <span class="at">age_kin =</span> <span class="fu">unique</span>(swe_time_varying<span class="sc">$</span>kin_full<span class="sc">$</span>age_kin),</span>
+<span id="cb8-5"><a href="#cb8-5" tabindex="-1"></a>    <span class="at">prev =</span> .<span class="dv">005</span> <span class="sc">*</span> <span class="fu">exp</span>(.<span class="dv">05</span> <span class="sc">*</span> age_kin)  <span class="co"># Exponential increase with age</span></span>
+<span id="cb8-6"><a href="#cb8-6" tabindex="-1"></a>    )</span>
+<span id="cb8-7"><a href="#cb8-7" tabindex="-1"></a></span>
+<span id="cb8-8"><a href="#cb8-8" tabindex="-1"></a><span class="co"># Combine with kinship data and calculate counts</span></span>
+<span id="cb8-9"><a href="#cb8-9" tabindex="-1"></a>swe_time_varying<span class="sc">$</span>kin_full <span class="sc">%&gt;%</span> </span>
+<span id="cb8-10"><a href="#cb8-10" tabindex="-1"></a>  <span class="fu">left_join</span>(swe_prevalence) <span class="sc">%&gt;%</span> </span>
+<span id="cb8-11"><a href="#cb8-11" tabindex="-1"></a>  <span class="fu">group_by</span>(kin, age_focal, cohort) <span class="sc">%&gt;%</span> </span>
+<span id="cb8-12"><a href="#cb8-12" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
+<span id="cb8-13"><a href="#cb8-13" tabindex="-1"></a>    <span class="at">prevalent =</span> <span class="fu">sum</span>(living <span class="sc">*</span> prev),        <span class="co"># Kin with the condition</span></span>
+<span id="cb8-14"><a href="#cb8-14" tabindex="-1"></a>    <span class="at">no_prevalent =</span> <span class="fu">sum</span>(living <span class="sc">*</span> (<span class="dv">1</span><span class="sc">-</span>prev))  <span class="co"># Kin without the condition</span></span>
+<span id="cb8-15"><a href="#cb8-15" tabindex="-1"></a>    ) <span class="sc">%&gt;%</span> </span>
+<span id="cb8-16"><a href="#cb8-16" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="at">cols =</span> prevalent<span class="sc">:</span>no_prevalent, <span class="at">names_to =</span> <span class="st">&quot;prevalence_state&quot;</span>, <span class="at">values_to =</span> <span class="st">&quot;count&quot;</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb8-17"><a href="#cb8-17" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x=</span>age_focal, <span class="at">y =</span> count)) <span class="sc">+</span> </span>
+<span id="cb8-18"><a href="#cb8-18" tabindex="-1"></a>  <span class="fu">geom_area</span>(<span class="fu">aes</span>(<span class="at">fill=</span>prevalence_state)) <span class="sc">+</span></span>
+<span id="cb8-19"><a href="#cb8-19" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb8-20"><a href="#cb8-20" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">&quot;Expected number of relatives with and without the condition&quot;</span>,</span>
+<span id="cb8-21"><a href="#cb8-21" tabindex="-1"></a>    <span class="at">subtitle =</span> <span class="st">&quot;Based on age-specific prevalence rates&quot;</span>,</span>
+<span id="cb8-22"><a href="#cb8-22" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">&quot;Age of focal individual&quot;</span>,</span>
+<span id="cb8-23"><a href="#cb8-23" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">&quot;Number of living relatives&quot;</span>,</span>
+<span id="cb8-24"><a href="#cb8-24" tabindex="-1"></a>    <span class="at">fill =</span> <span class="st">&quot;Condition status&quot;</span></span>
+<span id="cb8-25"><a href="#cb8-25" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb8-26"><a href="#cb8-26" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>kin) <span class="sc">+</span></span>
+<span id="cb8-27"><a href="#cb8-27" tabindex="-1"></a>  <span class="fu">theme_bw</span>()</span></code></pre></div>
+<p><img src="1_2_OneSex_TimeVarying_Age_files/figure-html/unnamed-chunk-5-1.png" style="display: block; margin: auto;" /></p>
+<p><strong>Interpretation</strong>: The stacked area plots show the
+expected number of relatives with and without the hypothetical condition
+at each age of Focal:</p>
+<ul>
+<li>For older relatives (mothers, grandmothers), the proportion with the
+condition increases as Focal ages, reflecting the age-related nature of
+the condition</li>
+<li>For younger relatives (daughters, granddaughters), the prevalence
+remains low, consistent with the age pattern of the condition</li>
+<li>We can see both the changing total number of relatives and the
+changing composition by condition status</li>
+</ul>
+<p>This approach can be extended to any age-specific prevalence, such
+as: - Health conditions (disability, chronic disease) - Employment
+status - Educational attainment - Living arrangements</p>
+</div>
+</div>
+<div id="comparing-time-invariant-and-time-varying-models"
+class="section level1" number="4">
+<h1><span class="header-section-number">4</span> Comparing
+Time-Invariant and Time-Varying Models</h1>
+<p>The time-varying approach offers several advantages over
+time-invariant models:</p>
+<ol style="list-style-type: decimal">
+<li><strong>Historical accuracy</strong>: It incorporates actual
+demographic changes over time rather than assuming constant rates</li>
+<li><strong>Cohort specificity</strong>: It can model specific birth
+cohorts experiencing their unique demographic conditions</li>
+<li><strong>Period effects</strong>: It captures major demographic
+events like wars, pandemics, or baby booms</li>
+</ol>
+<p>However, time-invariant models still have their uses: - They provide
+a simpler baseline for understanding kinship patterns - They can project
+future kinship structures based on current demographic conditions - They
+require less data (only rates for a single year)</p>
+<p>For contemporary populations that have undergone substantial
+demographic transition, the differences between these approaches can be
+significant, especially for older individuals whose relatives lived
+through periods of rapid demographic change.</p>
+</div>
+<div id="conclusion" class="section level1" number="5">
+<h1><span class="header-section-number">5</span> Conclusion</h1>
+<p>In this vignette, we’ve explored how to implement time-varying
+kinship models using the <code>DemoKin</code> package. By incorporating
+historical demographic rates, these models provide more realistic
+estimates of kin availability across the life course for specific birth
+cohorts.</p>
+<p>Key extensions we’ve covered include: 1. Implementing one-sex
+time-varying models for specific birth cohorts 2. Analyzing patterns of
+kin loss and bereavement 3. Combining kinship estimates with prevalence
+data to understand kin characteristics</p>
+<p>These methods have important applications in: - Historical demography
+and family sociology - Intergenerational support and care systems -
+Understanding how demographic transitions reshape family structures -
+Projecting future care needs in aging societies</p>
+<p>Advanced users might explore further extensions such as: - Two-sex
+time-varying models - Multi-state models incorporating marriage,
+migration, or other transitions - Microsimulation approaches for more
+complex kinship dynamics</p>
+</div>
+<div id="references" class="section level1 unnumbered">
+<h1 class="unnumbered">References</h1>
+<div id="refs" class="references csl-bib-body hanging-indent"
+entry-spacing="0">
+<div id="ref-caswell_formal_2021" class="csl-entry">
+Caswell, Hal, and Xi Song. 2021. <span>“The Formal Demography of Kinship
+<span>III</span>: <span>Kinship</span> Dynamics with Time-Varying
+Demographic Rates.”</span> <em>Demographic Research</em> 45 (August):
+517–46. <a
+href="https://doi.org/10.4054/DemRes.2021.45.16">https://doi.org/10.4054/DemRes.2021.45.16</a>.
+</div>
+</div>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+<script>
+$(document).ready(function () {
+  window.initializeCodeFolding("show" === "show");
+});
+</script>
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = false;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
