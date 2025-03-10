@@ -144,11 +144,6 @@ You can view all available data in the package with `data(package="DemoKin")`.
 Let's examine a subset of the Swedish demographic data to understand its structure:
 
 ```{r data_exploration, warning=FALSE, message=FALSE}
-data(swe_px, package = "DemoKin")
-data(swe_Sx, package = "DemoKin")
-data(swe_asfr, package = "DemoKin")
-data(swe_pop, package = "DemoKin")
-
 # First 10 rows and columns of survival probabilities
 head(swe_px[1:10, 1:10])
 

@@ -162,13 +162,6 @@ Due to data limitations, we make some simplifying assumptions:
 Let's load the pre-processed UK data:
 
 ```{r parity_data_load, message=FALSE, warning=FALSE}
-data(Female_parity_fert_list_UK, package = "DemoKin")
-data(Parity_transfers_by_age_list_UK, package = "DemoKin")
-data(Parity_transfers_by_age_list_UK, package = "DemoKin")
-data(Female_parity_mortality_list_UK, package = "DemoKin")
-data(Male_parity_mortality_list_UK, package = "DemoKin")
-data(Redistribution_by_parity_list_UK, package = "DemoKin")
-
 # Load pre-processed data for UK
 F_mat_fem <- Female_parity_fert_list_UK       # Female fertility by parity
 F_mat_male <- Female_parity_fert_list_UK      # Male fertility (same as female due to androgynous approximation)

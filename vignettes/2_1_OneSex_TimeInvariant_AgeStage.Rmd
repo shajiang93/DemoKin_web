@@ -149,11 +149,6 @@ The `DemoKin` package includes data from Slovakia in 1980, which we'll use to im
 For multi-state models, we need several matrices that specify how demographic rates vary by both age and stage. Let's examine the structure of the Slovakia data included in the `DemoKin` package:
 
 ```{r data_structure}
-data(svk_fxs, package = "DemoKin")
-data(svk_pxs, package = "DemoKin")
-data(svk_Hxs, package = "DemoKin")
-data(svk_Uxs, package = "DemoKin")
-
 # Examine fertility rates by age and parity
 head(svk_fxs[1:10, ])
 
