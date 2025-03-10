@@ -1,5 +1,4 @@
-url: https://yourusername.github.io/DemoKin/
-
+url: https://shajiang93.github.io/DemoKin/
 home:
   title: DemoKin - Matrix-based Kinship Models
   description: >
@@ -7,9 +6,8 @@ home:
     matrix-based models. DemoKin implements a range of methods for 
     estimating kin counts, age distributions, and other family structure 
     dynamics under various demographic assumptions.
-
 template:
-  bootstrap: 4
+  bootstrap: 5  # Updated from 4 to 5 as per the warning
   bootswatch: flatly
   bslib:
     primary: "#0054AD"

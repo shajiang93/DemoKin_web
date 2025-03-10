@@ -1,6 +1,17 @@
 ---
 title: "Two-sex time-varying kinship model specified by age and stage"
-output: rmarkdown::html_vignette
+output:
+  html_document:
+    toc: true
+    toc_float: 
+      collapsed: false
+      smooth_scroll: true
+    theme: readable
+    highlight: pygments
+    number_sections: true
+    code_folding: show
+    df_print: paged
+    fig_caption: true
 vignette: >
   %\VignetteIndexEntry{Two-sex time-varying kinship model specified by age and stage}
   %\VignetteEngine{knitr::rmarkdown}
@@ -165,7 +176,7 @@ H_mat <- Redistribution_by_parity_list_UK     # Birth redistribution matrices
 
 Now let's implement the two-sex time-varying multi-state model with parity as the stage variable:
 
-```{r parity_model, message=FALSE, warning=FALSE, eval=TRUE}
+```{r parity_model, message=FALSE, warning=FALSE, eval=FALSE}
 # Define time period and parameters
 no_years <- 40  # Run the model for 40 years (1965-2005)
 
@@ -195,7 +206,7 @@ kin_out_1965_2005 <-
 
 Let's examine the structure of the output:
 
-```{r parity_output_show, message=FALSE, warning=FALSE, eval=TRUE}
+```{r parity_output_show, message=FALSE, warning=FALSE, eval=FALSE}
 head(kin_out_1965_2005$kin_summary)
 ```
 
@@ -212,7 +223,7 @@ The output includes:
 
 Let's visualize the distribution of older aunts and uncles by parity for different ages of Focal across different calendar years:
 
-```{r parity_aunts_uncles, message=FALSE, warning=FALSE, fig.height=6, fig.width=8, eval=TRUE}
+```{r parity_aunts_uncles, message=FALSE, warning=FALSE, fig.height=6, fig.width=8, eval=FALSE}
 kin_out_1965_2005$kin_summary %>%
   filter(group == "oa") %>%
   ggplot(aes(x = age_focal, y = count, color = stage_kin, fill = stage_kin)) +
@@ -233,7 +244,7 @@ kin_out_1965_2005$kin_summary %>%
 
 Now let's examine the distribution of children by parity:
 
-```{r parity_offspring, message=FALSE, warning=FALSE, fig.height=6, fig.width=8, eval=TRUE}
+```{r parity_offspring, message=FALSE, warning=FALSE, fig.height=6, fig.width=8, eval=FALSE}
 kin_out_1965_2005$kin_summary %>%
   filter(group == "d") %>%
   ggplot(aes(x = age_focal, y = count, color = stage_kin, fill = stage_kin)) +
@@ -256,7 +267,7 @@ kin_out_1965_2005$kin_summary %>%
 
 We can also examine the kinship networks of specific birth cohorts. Let's compare the offspring parity distributions for three different cohorts (1910, 1925, and 1965):
 
-```{r parity_cohort, message=FALSE, warning=FALSE, fig.height=6, fig.width=8, eval=TRUE}
+```{r parity_cohort, message=FALSE, warning=FALSE, fig.height=6, fig.width=8, eval=FALSE}
 kin_out_1965_2005$kin_summary %>%
   filter(group == "d", cohort %in% c(1910, 1925, 1965)) %>%
   ggplot(aes(x = age_focal, y = count, color = stage_kin, fill = stage_kin)) +
@@ -283,7 +294,7 @@ kin_out_1965_2005$kin_summary %>%
 
 For more detailed analysis, we can examine the age and parity distribution of specific relatives. Let's look at the younger siblings of a 50-year-old Focal across different years:
 
-```{r parity_siblings_young, message=FALSE, warning=FALSE, fig.height=6, fig.width=8, eval=TRUE}
+```{r parity_siblings_young, message=FALSE, warning=FALSE, fig.height=6, fig.width=8, eval=FALSE}
 kin_out_1965_2005$kin_full %>%
   filter(group == "ys",
          age_focal == 50) %>%
@@ -305,7 +316,7 @@ kin_out_1965_2005$kin_full %>%
 
 And now let's look at the older siblings:
 
-```{r parity_siblings_old, message=FALSE, warning=FALSE, fig.height=6, fig.width=8, eval=TRUE}
+```{r parity_siblings_old, message=FALSE, warning=FALSE, fig.height=6, fig.width=8, eval=FALSE}
 kin_out_1965_2005$kin_full %>%
   filter(group == "os",
          age_focal == 50) %>%
@@ -327,7 +338,7 @@ kin_out_1965_2005$kin_full %>%
 
 We can also combine these to examine all siblings:
 
-```{r parity_siblings_all, message=FALSE, warning=FALSE, fig.height=6, fig.width=8, eval=TRUE}
+```{r parity_siblings_all, message=FALSE, warning=FALSE, fig.height=6, fig.width=8, eval=FALSE}
 kin_out_1965_2005$kin_full %>%
   filter((group == "ys" | group == "os"),
          age_focal == 50) %>%
@@ -366,7 +377,7 @@ load("../data/singapore_edu.rdata")
 
 Now let's implement the two-sex time-varying multi-state model with education as the stage variable:
 
-```{r education_model, message=FALSE, warning=FALSE, eval=TRUE}
+```{r education_model, message=FALSE, warning=FALSE, eval=FALSE}
 # Define time period and parameters
 time_range <- seq(2020, 2090, 5)
 no_years <- length(time_range) - 1
@@ -395,7 +406,7 @@ kin_out_2020_2090 <-
 
 Now we need to recode the stage variables to show meaningful educational labels:
 
-```{r education_recode, message=FALSE, warning=FALSE, eval=TRUE}
+```{r education_recode, message=FALSE, warning=FALSE, eval=FALSE}
 # Recode year and age variables to show correct values
 kin_out_2020_2090$kin_summary <- 
   kin_out_2020_2090$kin_summary %>%
@@ -433,7 +444,7 @@ kin_out_2020_2090$kin_full <-
 
 Let's examine the structure of the output:
 
-```{r education_output_show, message=FALSE, warning=FALSE, eval=TRUE}
+```{r education_output_show, message=FALSE, warning=FALSE, eval=FALSE}
 kin_out_2020_2090$kin_summary[1000:1010, ]
 ```
 
@@ -441,7 +452,7 @@ kin_out_2020_2090$kin_summary[1000:1010, ]
 
 First, let's visualize the total number of living kin by educational attainment for a woman born in 2020 in Singapore:
 
-```{r education_total_kin, message=FALSE, warning=FALSE, fig.height=6, fig.width=8, eval=TRUE}
+```{r education_total_kin, message=FALSE, warning=FALSE, fig.height=6, fig.width=8, eval=FALSE}
 kin_out_2020_2090$kin_summary %>%
   # Exclude Focal from the analysis
   filter(group != "Focal") %>% 
@@ -464,7 +475,7 @@ kin_out_2020_2090$kin_summary %>%
 
 Now let's look at specific types of relatives:
 
-```{r education_specific_kin, message=FALSE, warning=FALSE, fig.height=6, fig.width=8, eval=TRUE}
+```{r education_specific_kin, message=FALSE, warning=FALSE, fig.height=6, fig.width=8, eval=FALSE}
 kin_out_2020_2090$kin_summary %>%
   filter(group %in% c("d", "gd", "m", "gm")) %>% 
   filter(cohort == 2020) %>%
@@ -487,7 +498,7 @@ kin_out_2020_2090$kin_summary %>%
 
 Let's examine the age and educational distribution of key relatives when the focal individual is 60 years old:
 
-```{r education_age_distribution, message=FALSE, warning=FALSE, fig.height=6, fig.width=10, eval=TRUE}
+```{r education_age_distribution, message=FALSE, warning=FALSE, fig.height=6, fig.width=10, eval=FALSE}
 kin_out_2020_2090$kin_full %>%
   filter(
     group %in%  c("d", "gd", "m", "gm"),
@@ -519,7 +530,7 @@ kin_out_2020_2090$kin_full %>%
 
 Now let's examine how the educational composition of specific relatives changes over time. First, let's look at the educational attainment of descendants (children and grandchildren) of 60-year-old women across different calendar years:
 
-```{r education_descendants_time, message=FALSE, warning=FALSE, fig.height=6, fig.width=8, eval=TRUE}
+```{r education_descendants_time, message=FALSE, warning=FALSE, fig.height=6, fig.width=8, eval=FALSE}
 kin_out_2020_2090$kin_summary %>%
   filter(
     group %in% c("d", "gd"),
@@ -544,7 +555,7 @@ kin_out_2020_2090$kin_summary %>%
 
 Finally, let's examine the educational attainment of parents and grandparents of newborn women over time:
 
-```{r education_ancestors_time, message=FALSE, warning=FALSE, fig.height=6, fig.width=8, eval=TRUE}
+```{r education_ancestors_time, message=FALSE, warning=FALSE, fig.height=6, fig.width=8, eval=FALSE}
 kin_out_2020_2090$kin_summary %>%
   filter(
     group %in% c("m", "gm"),

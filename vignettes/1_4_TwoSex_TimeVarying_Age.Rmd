@@ -1,6 +1,17 @@
 ---
 title: "Two-sex time-varying kinship model specified by age"
-output: rmarkdown::html_vignette
+output:
+  html_document:
+    toc: true
+    toc_float: 
+      collapsed: false
+      smooth_scroll: true
+    theme: readable
+    highlight: pygments
+    number_sections: true
+    code_folding: show
+    df_print: paged
+    fig_caption: true
 vignette: >
   %\VignetteIndexEntry{Two-sex time-varying kinship model specified by age}
   %\VignetteEngine{knitr::rmarkdown}
@@ -257,6 +268,12 @@ Let's evaluate these approximations using French data from the `DemoKin` package
 The androgynous approximation uses female rates for both sexes. Let's compare it to the full two-sex model:
 
 ```{r, message=FALSE, warning=FALSE}
+# Load data of France again
+fra_fert_f <- fra_asfr_sex[,"ff"]    # Female fertility rates
+fra_fert_m <- fra_asfr_sex[,"fm"]    # Male fertility rates
+fra_surv_f <- fra_surv_sex[,"pf"]    # Female survival probabilities
+fra_surv_m <- fra_surv_sex[,"pm"]    # Male survival probabilities
+
 # Full two-sex model
 kin_out <- kin2sex(fra_surv_f, fra_surv_m, fra_fert_f, fra_fert_m, 
                   sex_focal = "f", birth_female = .5)

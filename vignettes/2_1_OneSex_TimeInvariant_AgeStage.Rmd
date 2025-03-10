@@ -1,10 +1,19 @@
 ---
 title: "One-sex time-invariant kinship model specified by age and stage"
-output: rmarkdown::html_vignette
+output:
+  html_document:
+    toc: true
+    toc_float: 
+      collapsed: false
+      smooth_scroll: true
+    theme: readable
+    highlight: pygments
+    number_sections: true
+    code_folding: show
+    df_print: paged
+    fig_caption: true
 vignette: >
-  %\VignetteIndexEntry{
-One-sex time-invariant kinship model specified by age and stage
-}
+  %\VignetteIndexEntry{One-sex time-invariant kinship model specified by age and stage}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
