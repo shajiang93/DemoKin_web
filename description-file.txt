@@ -28,5 +28,5 @@ Suggests:
     rmarkdown,
     testthat
 VignetteBuilder: knitr
-URL: https://github.com/yourusername/DemoKin
-BugReports: https://github.com/yourusername/DemoKin/issues
+URL: https://github.com/shajiang93/DemoKin
+BugReports: https://github.com/shajiang93/DemoKin/issues

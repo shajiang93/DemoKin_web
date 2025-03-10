@@ -1,43 +1,54 @@
-on:
-  push:
-    branches: [main, master]
-  pull_request:
-    branches: [main, master]
+url: https://shajiang93.github.io/DemoKin_web/
 
-name: pkgdown
+template:
+  bootstrap: 5
+  bootswatch: flatly
+  bslib:
+    primary: "#0054AD"
+    border-radius: 0.5rem
+    btn-border-radius: 0.25rem
 
-jobs:
-  pkgdown:
-    runs-on: ubuntu-latest
-    env:
-      GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
-    steps:
-      - uses: actions/checkout@v2
+navbar:
+  structure:
+    left: [home, reference, age_models, stage_models]
+    right: [github]
+  components:
+    home:
+      icon: fas fa-home fa-lg
+      href: index.html
+    reference:
+      text: Reference
+      href: reference/index.html
+    age_models:
+      text: "Age-based Models"
+      menu:
+      - text: "One-sex time-invariant kinship model"
+        href: articles/1_1_OneSex_TimeInvariant_Age.html
+      - text: "One-sex time-varying kinship model"
+        href: articles/1_2_OneSex_TimeVarying_Age.html
+      - text: "Two-sex time-invariant kinship model"
+        href: articles/1_3_TwoSex_TimeInvariant_Age.html
+      - text: "Two-sex time-varying kinship model"
+        href: articles/1_4_TwoSex_TimeVarying_Age.html
+    stage_models:
+      text: "Age-Stage Models"
+      menu:
+      - text: "One-sex time-invariant with stage"
+        href: articles/2_1_OneSex_TimeInvariant_AgeStage.html
+      - text: "Two-sex time-varying with stage"
+        href: articles/2_2_TwoSex_TimeVarying_AgeStage.html
+    github:
+      icon: fab fa-github fa-lg
+      href: https://github.com/shajiang93/DemoKin_web
 
-      - uses: r-lib/actions/setup-r@v2
-        with:
-          use-public-rspm: true
-
-      - uses: r-lib/actions/setup-pandoc@v2
-
-      - name: Install dependencies
-        run: |
-          install.packages(c("remotes", "pkgdown", "dplyr", "tidyr", "ggplot2", "readr", "knitr", "data.table", "Matrix"))
-          remotes::install_github("IvanWilli/DemoKin")
-        shell: Rscript {0}
-
-      - name: Install package
-        run: R CMD INSTALL .
-
-      - name: Build and deploy pkgdown site
-        run: |
-          git config --local user.name "$GITHUB_ACTOR"
-          git config --local user.email "$GITHUB_ACTOR@users.noreply.github.com"
-          Rscript -e 'pkgdown::build_site()'
-      
-      - name: Deploy to GitHub pages
-        if: github.event_name != 'pull_request'
-        uses: JamesIves/github-pages-deploy-action@4.1.4
-        with:
-          branch: gh-pages
-          folder: docs
+articles:
+  - title: "Age-based Models"
+    contents:
+      - 1_1_OneSex_TimeInvariant_Age
+      - 1_2_OneSex_TimeVarying_Age
+      - 1_3_TwoSex_TimeInvariant_Age
+      - 1_4_TwoSex_TimeVarying_Age
+  - title: "Age-Stage Models"
+    contents:
+      - 2_1_OneSex_TimeInvariant_AgeStage
+      - 2_2_TwoSex_TimeVarying_AgeStage
