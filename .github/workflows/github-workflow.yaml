@@ -1,11 +1,10 @@
+mkdir -p .github/workflows
+cat > .github/workflows/pkgdown-new.yaml << 'EOF'
 on:
   push:
     branches: [main, master]
   pull_request:
     branches: [main, master]
-  release:
-    types: [published]
-  workflow_dispatch:
 
 name: pkgdown
 
@@ -25,8 +24,8 @@ jobs:
 
       - name: Install dependencies
         run: |
-          install.packages(c("remotes", "pkgdown"))
-          remotes::install_deps(dependencies = TRUE)
+          install.packages(c("remotes", "pkgdown", "dplyr", "tidyr", "ggplot2", "readr", "knitr", "data.table", "Matrix"))
+          remotes::install_github("IvanWilli/DemoKin")
         shell: Rscript {0}
 
       - name: Install package
@@ -44,3 +43,4 @@ jobs:
         with:
           branch: gh-pages
           folder: docs
+EOF
