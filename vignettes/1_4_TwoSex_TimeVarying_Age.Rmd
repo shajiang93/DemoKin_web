@@ -12,6 +12,7 @@ output:
     code_folding: show
     df_print: paged
     fig_caption: true
+bibliography: references.bib
 vignette: >
   %\VignetteIndexEntry{Two-sex time-varying kinship model specified by age}
   %\VignetteEngine{knitr::rmarkdown}
@@ -72,17 +73,7 @@ options(scipen = 999999)
 
 # Introduction {#introduction}
 
-Kinship networks are shaped by two fundamental forces: demographic differences between males and females, and historical changes in demographic rates over time. While we have explored these dimensions separately in previous vignettes, this vignette combines them into a more comprehensive framework: a **two-sex time-varying kinship model**.
-
-This integrated approach offers several key advantages:
-
-- Accounts for sex differences in mortality and fertility patterns
-- Incorporates historical demographic changes from the demographic transition
-- Enables comparison between period and cohort perspectives
-- Provides more realistic estimates of kinship structures by sex
-- Allows for the analysis of sex ratios across time periods
-
-In this vignette, we will implement a two-sex time-varying model using the `kin2sex` function with `time_invariant = FALSE`. This allows us to analyze how kinship networks evolve differently for males and females across changing demographic conditions.
+Family networks are shaped simultaneously by two fundamental forces: demographic differences between males and females, and historical changes in demographic rates over time. While previous vignettes have explored these dimensions separately, this vignette integrates them into a more comprehensive framework: a **two-sex time-varying kinship model**, outlined in Caswell [-@caswell_formal_2022], using the `kin2sex` function with `time_invariant = FALSE`.
 
 ## Package Installation {#preparation}
 
@@ -129,8 +120,6 @@ The combined two-sex time-varying kinship model expands on previous models by re
 2. **Sex-specific fertility rates over time**: How fertility patterns differ between males and females across historical periods
 3. **Sex ratio at birth**: The proportion of births that are female
 4. **Sex of the focal individual**: Whether we're analyzing male or female kinship networks
-
-This model allows us to account for both sex differences and temporal changes simultaneously, providing a more realistic representation of kinship dynamics.
 
 # Data Preparation {#model-input-2sex-time-varying}
 
@@ -182,14 +171,12 @@ bind_rows(
 - **Survival**: Male survival probabilities are lower than female survival at all ages
 - **Both rates** show characteristic age patterns: fertility concentrated in reproductive ages, and survival declining with age
 
-These sex differences will shape kinship networks in important ways, especially when combined with historical demographic changes.
-
 # Running the Two-Sex Time-Varying Model {#run-model-2sex-time-varying}
 
 Now, let's implement the two-sex time-varying kinship model using the `kin2sex` function with `time_invariant = FALSE`:
 
 ```{r}
-kin_out_time_variant <- kin2sex(
+kin_out_time_varying <- kin2sex(
   pf = swe_surv_f_matrix,       # Female survival matrix (age x year)
   pm = swe_surv_m_matrix,       # Male survival matrix (age x year)
   ff = swe_fert_f_matrix,       # Female fertility matrix (age x year)
@@ -203,7 +190,7 @@ kin_out_time_variant <- kin2sex(
 
 The resulting output provides detailed information on the kinship network for the 1900 female birth cohort, with relatives classified by both age and sex.
 
-# Comparing Time-Variant and Time-Invariant Models {#kin-availability-2sex-time-varying}
+# Comparing Time-Varying and Time-Invariant Models {#kin-availability-2sex-time-varying}
 
 To understand the impact of incorporating historical demographic change, let's compare the time-varying model with a time-invariant model that uses only 1900 rates:
 
@@ -219,7 +206,7 @@ kin_out_time_invariant <- kin2sex(
 )
 
 # Combine and plot the results
-kin_out_time_variant$kin_summary %>%
+kin_out_time_varying$kin_summary %>%
   filter(cohort == 1900) %>% 
   mutate(type = "variant") %>%
   bind_rows(kin_out_time_invariant$kin_summary %>% mutate(type = "invariant")) %>% 
@@ -238,7 +225,7 @@ kin_out_time_variant$kin_summary %>%
   theme_bw() +
   facet_grid(cols = vars(kin), rows = vars(sex_kin), scales = "free") +
   labs(
-    title = "Time-variant vs. time-invariant kinship models by sex",
+    title = "Time-varying vs. time-invariant kinship models by sex",
     subtitle = "Female 1900 birth cohort, Sweden",
     x = "Age of focal individual",
     y = "Number of living relatives",
@@ -246,11 +233,12 @@ kin_out_time_variant$kin_summary %>%
   )
 ```
 
-**Interpretation**: This comparison reveals important differences between time-variant and time-invariant models:
+**Interpretation**: This comparison reveals important differences between time-varying and time-invariant models:
 
-- **Male relatives**: The differences are especially pronounced for male kin (top row), where mortality improvements over time led to greater availability than predicted by the time-invariant model
-- **Ascending generations**: For mothers, grandmothers, and great-grandmothers, the time-varying model shows higher kin availability at older ages, reflecting mortality improvements not captured by the time-invariant model
-- **Descendants**: For daughters, the differences are smaller but still present, particularly at later ages
+- **Relatives by sex**: The differences are pronounced for both male kin (bottom row) and female kin (top row), where mortality improvements over time led to greater availability than predicted by the time-invariant model
+- **Ascending generations**: For parents (m), grandparents (gm), and great-grandparents (ggm), the time-varying model shows higher kin availability at older ages, reflecting mortality improvements not captured by the time-invariant model
+- **Descendants**: For children (d), the time-varying model shows fewer kin, reflecting fertility decline over time
+- **Kin of same generation**: For siblings (s), fertility decline over time has limited impact on their numbers because these fertility events have either already occurred or will occur very shortly. Instead, mortality improvements play a more critical role, leading the time-varying model to predict a higher number of surviving siblings at older ages.
 
 The time-varying model captures the demographic transition that occurred over the 20th century, including declining fertility and mortality rates. This produces a more accurate representation of kinship dynamics for historical cohorts.
 
@@ -259,7 +247,7 @@ The time-varying model captures the demographic transition that occurred over th
 In practice, demographic data is often limited, particularly for male fertility rates which can be difficult to obtain. Caswell [-@caswell_formal_2022] introduced two approximation methods to estimate two-sex kinship networks when male demographic rates are unavailable:
 
 1. **Androgynous approximation**: Assumes equal fertility and survival for males and females
-2. **GKP factors**: Applies multipliers to one-sex kin counts based on theoretical considerations
+2. **GKP factors**: Applies multipliers to one-sex kin counts based on theoretical considerations in Goodman, Keyfitz and Pullum [-@caswell_formal_2022]
 
 Let's evaluate these approximations using French data from the `DemoKin` package:
 
@@ -302,7 +290,7 @@ bind_rows(
   )
 ```
 
-**Interpretation**: The androgynous approximation performs well for most kin types, particularly for female relatives. However, it shows noticeable discrepancies for male grandparents and great-grandparents, where ignoring male-specific mortality leads to overestimation.
+**Interpretation**: The androgynous approximation performs well for most kin types, particularly for female relatives. However, it shows noticeable discrepancies for most types of male relatives, where ignoring male-specific mortality leads to overestimation.
 
 ## GKP Factors Approximation {#gkp}
 
@@ -363,22 +351,13 @@ bind_rows(
   )
 ```
 
-**Interpretation**: This comparison shows that both approximation methods produce reasonable estimates for most kin types:
-
-- **GKP factors**: Perform well for most kin types but may overestimate some relationships (especially more distant ones)
-- **Androgynous**: Generally provides good approximations, particularly for close kin, but less accurate for distant male relatives
-- **Age effects**: The accuracy of approximations varies by Focal's age, with greater discrepancies at older ages
-
-These approximations offer practical alternatives when sex-specific data is limited, though they should be used with caution and their limitations understood.
+**Interpretation**: This comparison shows that both approximation methods produce reasonable estimates for most kin types. Overall, these approximations offer practical alternatives when sex-specific data is limited, though they should be used with caution and their limitations understood.
 
 # Incorporating Causes of Death {#prevalance-2sex-time-varying}
 
-The `kin2sex` function also allows for the analysis of kinship networks by cause of death, providing insights into how different mortality causes affect kin availability. Let's implement a simple cause-of-death model with two competing causes.
+The `kin2sex` function also allows for the analysis of kinship networks by cause of death, providing insights into how different mortality causes affect kin availability. More details about kin bereavement methodology can be found in Caswell, Margolis and Verdery [-@Caswell2023]. Let's implement a simple cause-of-death model with two competing causes.
 
-We'll assume the following:
-- For females, the risk of the first cause is half the risk of the second cause for ages above 50
-- For males, the risk of the first cause is one-third the risk of the second cause for ages above 50
-- Both sexes have equal risk of both causes before age 50
+Now assume we have two causes of death (COD). For females, the risk of the first COD is half the risk of the second COD for ages greater than 50. For males, the risk of the first COD is 2/3 of the second COD for ages greater than 50. We operationalize this using two matrices with dimension 2 by 101 (number of causes by number of ages).
 
 ```{r}
 # Create matrices of relative risks by cause, sex, and age
@@ -449,13 +428,7 @@ Key insights include:
 3. Approximation methods offer practical alternatives when data is limited
 4. Cause-of-death extensions provide insights into how different mortality causes shape kinship structures
 
-These advanced models have numerous applications in demography, sociology, and public health, including:
-- Understanding historical changes in support networks
-- Analyzing sex differences in care provision and receipt
-- Projecting future kinship structures under different demographic scenarios
-- Examining how specific causes of death affect family structures
-
-Future research might combine these approaches with multi-state models to create even more comprehensive frameworks for kinship analysis.
+These advanced models enhance our understanding of gender and family dynamics across demographic transitions, offering valuable tools for demographic analysis, care planning, and social policy development in aging societies.
 
 # References
 

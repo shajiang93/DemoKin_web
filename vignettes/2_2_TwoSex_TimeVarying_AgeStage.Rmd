@@ -12,6 +12,7 @@ output:
     code_folding: show
     df_print: paged
     fig_caption: true
+bibliography: references.bib
 vignette: >
   %\VignetteIndexEntry{Two-sex time-varying kinship model specified by age and stage}
   %\VignetteEngine{knitr::rmarkdown}
@@ -72,17 +73,14 @@ options(scipen = 999999)
 
 # Introduction {#introduction}
 
-In this vignette, we explore the most comprehensive kinship model currently available in the `DemoKin` package: a **two-sex time-varying multi-state model**. This model integrates all the extensions we've explored in previous vignettes, allowing us to analyze kinship networks with unprecedented detail and realism.
+In this final vignette, we integrate all elements from previous tutorials into the most comprehensive kinship model available: a **two-sex time-varying multi-state model**. This framework simultaneously accounts for:
 
-The model accounts for:
-- Sex differences in mortality and fertility
-- Historical changes in demographic rates over time
-- Stage-based transitions that reflect different sociodemographic characteristics
+- Sex differences in demographic rates
+- Historical changes over time
+- Stage-based transitions (like parity or education)
 - Joint distributions of age, sex, and stage among relatives
 
-By incorporating these multiple dimensions simultaneously, we can address complex research questions about how kinship networks evolve across demographic transitions, how they differ by sex, and how they're shaped by individual characteristics like parity or education.
-
-Building on Caswell's earlier work [@caswell_formal_2019; @caswell_formal_2020; @caswell_formal_2021; @caswell_formal_2022], this integrated approach offers a powerful framework for understanding family structures in all their complexity.
+Building on Caswell and colleagues' theoretical developments [-@caswell_formal_2019; -@caswell_formal_2020; -@caswell_formal_2021; -@caswell_formal_2022], this approach provides unprecedented analytical power for understanding complex family structures. We'll implement this comprehensive model using the `kin_multi_stage_time_variant_2sex` function, exploring two examples: one using parity and another using educational attainment to demonstrate how these models illuminate contemporary family dynamics in ways simpler models cannot.
 
 ## Package Installation {#preparation}
 
@@ -127,6 +125,7 @@ options(dplyr.summarise.inform = FALSE) # hide summarise output
 The `kin_multi_stage_time_variant_2sex` function in the `DemoKin` package allows us to implement a comprehensive kinship model that accounts for sex, time, and stage simultaneously. This function computes stage-specific kinship networks across both sexes for an average member of a population (focal) under time-varying demographic rates.
 
 The model estimates:
+
 - The number of relatives of each type
 - The age distribution of relatives
 - The sex distribution of relatives
@@ -172,11 +171,18 @@ U_mat_male <- Male_parity_mortality_list_UK   # Male survival
 H_mat <- Redistribution_by_parity_list_UK     # Birth redistribution matrices
 ```
 
+These lists contain period-specific demographic rates:
+
+- `U_mat_fem`/`U_mat_male`: Lists of matrices containing survival probabilities by age (rows) and parity (columns) from 1965-2022
+- `F_mat_fem`/`F_mat_male`: Lists of matrices containing fertility rates by age and parity 
+- `T_mat_fem`/`T_mat_male`: Lists of transition matrices showing probabilities of moving between parity states
+- `H_mat`: List of matrices that redistribute newborns to age-class 1 and parity 0
+
 ## Running the Parity Model {#parity-model-running}
 
 Now let's implement the two-sex time-varying multi-state model with parity as the stage variable:
 
-```{r parity_model, message=FALSE, warning=FALSE, eval=FALSE}
+```{r parity_model, message=FALSE, warning=FALSE, eval=TRUE}
 # Define time period and parameters
 no_years <- 40  # Run the model for 40 years (1965-2005)
 
@@ -200,17 +206,36 @@ kin_out_1965_2005 <-
   )
 ```
 
-> Note: This model run takes approximately 10 minutes to complete. For the purpose of this vignette, we'll assume it has already been run.
+> Note: This model run takes approximately 30 minutes to complete. 
+
+Now we need to recode the stage variables to show meaningful parity labels:
+
+```{r parity_output_recode, message=FALSE, warning=FALSE, eval=TRUE}
+# After running the model, recode the parity stage values
+kin_out_1965_2005$kin_summary <- 
+  kin_out_1965_2005$kin_summary %>%
+  mutate(stage_kin = factor(as.numeric(stage_kin) - 1, 
+                           levels = c(0, 1, 2, 3, 4, 5),
+                           labels = c("0", "1", "2", "3", "4", "5+")))
+
+# Do the same for the kin_full dataframe if you're using it
+kin_out_1965_2005$kin_full <- 
+  kin_out_1965_2005$kin_full %>%
+  mutate(stage_kin = factor(as.numeric(stage_kin) - 1, 
+                           levels = c(0, 1, 2, 3, 4, 5),
+                           labels = c("0", "1", "2", "3", "4", "5+")))
+```
 
 ## Analyzing Kin Counts by Parity {#parity-kin-counts}
 
 Let's examine the structure of the output:
 
-```{r parity_output_show, message=FALSE, warning=FALSE, eval=FALSE}
+```{r parity_output_show, message=FALSE, warning=FALSE, eval=TRUE}
 head(kin_out_1965_2005$kin_summary)
 ```
 
 The output includes:
+
 - `age_focal`: Age of the focal individual
 - `kin_stage`: Stage (parity) of the relatives
 - `sex_kin`: Sex of the relatives
@@ -221,9 +246,11 @@ The output includes:
 
 ### Period Analysis of Kin by Parity {#parity-period-analysis}
 
-Let's visualize the distribution of older aunts and uncles by parity for different ages of Focal across different calendar years:
+Let's visualize the distribution of older aunts and uncles by parity for different ages of Focal across different calendar years.
 
-```{r parity_aunts_uncles, message=FALSE, warning=FALSE, fig.height=6, fig.width=8, eval=FALSE}
+We first restrict Focal's kinship network to aunts and uncles older than Focal's mother by setting `group` == "oa". We visualize the marginal parity distributions of kin: `stage_kin`, for each age of Focal `age_focal`, using different color schemes. Implicit in the below plot is that we really plot Focal's born into different `cohort` -- i.e., in the 2005 panel we show a 50 year old Focal was born in 1955, while a 40 year old Focal was born in 1965.
+
+```{r parity_aunts_uncles, message=FALSE, warning=FALSE, fig.height=6, fig.width=8, eval=TRUE}
 kin_out_1965_2005$kin_summary %>%
   filter(group == "oa") %>%
   ggplot(aes(x = age_focal, y = count, color = stage_kin, fill = stage_kin)) +
@@ -242,9 +269,9 @@ kin_out_1965_2005$kin_summary %>%
   )
 ```
 
-Now let's examine the distribution of children by parity:
+We could also consider any other kin in Focal's network, for instance, offspring using `group` == "d":
 
-```{r parity_offspring, message=FALSE, warning=FALSE, fig.height=6, fig.width=8, eval=FALSE}
+```{r parity_offspring, message=FALSE, warning=FALSE, fig.height=6, fig.width=8, eval=TRUE}
 kin_out_1965_2005$kin_summary %>%
   filter(group == "d") %>%
   ggplot(aes(x = age_focal, y = count, color = stage_kin, fill = stage_kin)) +
@@ -265,9 +292,11 @@ kin_out_1965_2005$kin_summary %>%
 
 ### Cohort Analysis of Kin by Parity {#parity-cohort-analysis}
 
-We can also examine the kinship networks of specific birth cohorts. Let's compare the offspring parity distributions for three different cohorts (1910, 1925, and 1965):
+Since we only ran the model for 40 years (between 1965-2005), there is very little scope to view kinship as cohort-specific.
 
-```{r parity_cohort, message=FALSE, warning=FALSE, fig.height=6, fig.width=8, eval=FALSE}
+We can however compare cohorts for 40-year segments of Focal's life. Below, following from the above example, we once again consider offspring and only show Focals born of `cohort` 1910, 1925, or 1965:
+
+```{r parity_cohort, message=FALSE, warning=FALSE, fig.height=6, fig.width=8, eval=TRUE}
 kin_out_1965_2005$kin_summary %>%
   filter(group == "d", cohort %in% c(1910, 1925, 1965)) %>%
   ggplot(aes(x = age_focal, y = count, color = stage_kin, fill = stage_kin)) +
@@ -286,6 +315,7 @@ kin_out_1965_2005$kin_summary %>%
 ```
 
 **Interpretation**:
+
 - The 1910 cohort (observed at ages 55-95): Most offspring have already completed their childbearing, showing a mix of parity states
 - The 1925 cohort (observed at ages 40-80): Offspring are observed during and after their reproductive years
 - The 1965 cohort (observed at ages 0-40): Initially, all offspring are in parity 0, gradually transitioning to higher parities as they age
@@ -294,7 +324,7 @@ kin_out_1965_2005$kin_summary %>%
 
 For more detailed analysis, we can examine the age and parity distribution of specific relatives. Let's look at the younger siblings of a 50-year-old Focal across different years:
 
-```{r parity_siblings_young, message=FALSE, warning=FALSE, fig.height=6, fig.width=8, eval=FALSE}
+```{r parity_siblings_young, message=FALSE, warning=FALSE, fig.height=6, fig.width=8, eval=TRUE}
 kin_out_1965_2005$kin_full %>%
   filter(group == "ys",
          age_focal == 50) %>%
@@ -314,31 +344,11 @@ kin_out_1965_2005$kin_full %>%
   )
 ```
 
-And now let's look at the older siblings:
+Notice the discontinuity along the x-axis at age 50. This reflects the fact that younger siblings cannot be older than Focal (by definition). Similarly, when we examine older siblings, we'll see they cannot be younger than Focal.
 
-```{r parity_siblings_old, message=FALSE, warning=FALSE, fig.height=6, fig.width=8, eval=FALSE}
-kin_out_1965_2005$kin_full %>%
-  filter(group == "os",
-         age_focal == 50) %>%
-  ggplot(aes(x = age_kin, y = count, color = stage_kin, fill = stage_kin)) +
-  geom_bar(position = "stack", stat = "identity") +
-  facet_grid(sex_kin ~ year) +
-  scale_x_continuous(breaks = c(0,10,20,30,40,50,60,70,80,90,100)) +
-  theme_bw() +
-  theme(axis.text.x = element_text(angle = 90, vjust = 0.5)) +
-  labs(
-    title = "Age and parity distribution of older siblings",
-    subtitle = "For a 50-year-old focal individual, United Kingdom, 1965-2005",
-    x = "Age of sibling",
-    y = "Number of older siblings",
-    fill = "Parity",
-    color = "Parity"
-  )
-```
+With a simple manipulation of the output data frame, we can also plot the age and parity distribution of all siblings combined:
 
-We can also combine these to examine all siblings:
-
-```{r parity_siblings_all, message=FALSE, warning=FALSE, fig.height=6, fig.width=8, eval=FALSE}
+```{r parity_siblings_all, message=FALSE, warning=FALSE, fig.height=6, fig.width=8, eval=TRUE}
 kin_out_1965_2005$kin_full %>%
   filter((group == "ys" | group == "os"),
          age_focal == 50) %>%
@@ -364,7 +374,14 @@ kin_out_1965_2005$kin_full %>%
 
 ## Data Preparation {#education-data-preparation}
 
-In our second example, we'll use educational attainment as our stage variable. We'll use data from Singapore ranging from 2020 to 2090, sourced from the Wittgenstein Center. The data is aggregated into 5-year age groups and 5-year time intervals.
+In our second example, we'll use educational attainment as our stage variable. The data is for Singapore ranging from 2020 to 2090, sourced from the Wittgenstein Center. The data is aggregated into 5-year age groups and 5-year time intervals.
+
+Some simplifying assumptions we make due to data availability:
+
+1. Fertility rates vary with time and education but are identical for both sexes (androgynous approximation)
+2. Age-specific education transition probabilities vary over time but not by sex
+3. Educational transitions for young children follow Singapore's Compulsory Education Act 
+4. Demographic rates before 2020 are assumed stable (time-invariant)
 
 Let's load the pre-processed Singapore data:
 
@@ -373,11 +390,50 @@ Let's load the pre-processed Singapore data:
 load("../data/singapore_edu.rdata")
 ```
 
+This data includes:
+
+- `U_mat_fem_edu`/`U_mat_male_edu`: Lists of matrices containing survival probabilities by age (rows) and education (columns) from 2020-2090
+- `F_mat_fem_edu`/`F_mat_male_edu`: Lists of matrices containing fertility rates by age and education
+- `T_mat_fem_edu`/`T_mat_male_edu`: Lists of transition matrices showing probabilities of moving between education states
+- `H_mat_edu`: List of matrices that redistribute newborns to age-class 1 and "no education" category
+
+Before running the model, let's examine some trends in the data:
+
+```{r edu_trends, message=FALSE, warning=FALSE, eval=TRUE}
+# Calculate and plot Total Fertility Rate by education level over time
+tfr_data <- lapply(seq_along(F_mat_fem_edu), function(i) {
+  col_sums <- colSums(F_mat_fem_edu[[i]])
+  data.frame(
+    year = 2020 + (i - 1) * 5,
+    education = factor(colnames(F_mat_fem_edu[[i]]), 
+                      levels = c("e1", "e2", "e3", "e4", "e5", "e6"),
+                      labels = c("no education", "incomplete primary", 
+                                "primary", "lower secondary", 
+                                "upper secondary", "post-secondary")),
+    tfr = col_sums
+  )
+})
+
+tfr_df <- do.call(rbind, tfr_data)
+
+# Plot TFR trends
+ggplot(tfr_df, aes(x = year, y = tfr, color = education, group = education)) +
+  geom_line(size = 1) +
+  geom_point() +
+  theme_minimal() +
+  labs(
+    title = "Total Fertility Rate by Education Over Time",
+    x = "Year",
+    y = "TFR",
+    color = "Education"
+  )
+```
+
 ## Running the Education Model {#education-model-running}
 
 Now let's implement the two-sex time-varying multi-state model with education as the stage variable:
 
-```{r education_model, message=FALSE, warning=FALSE, eval=FALSE}
+```{r education_model, message=FALSE, warning=FALSE, eval=TRUE}
 # Define time period and parameters
 time_range <- seq(2020, 2090, 5)
 no_years <- length(time_range) - 1
@@ -402,11 +458,11 @@ kin_out_2020_2090 <-
   )
 ```
 
-> Note: This model run takes approximately 5 minutes to complete. For the purpose of this vignette, we'll assume it has already been run.
+> Note: This model run takes approximately 3 minutes to complete.
 
-Now we need to recode the stage variables to show meaningful educational labels:
+Now we need to recode the stage variables to show meaningful educational labels and convert years/ages to real values (since we used 5-year intervals):
 
-```{r education_recode, message=FALSE, warning=FALSE, eval=FALSE}
+```{r education_recode, message=FALSE, warning=FALSE, eval=TRUE}
 # Recode year and age variables to show correct values
 kin_out_2020_2090$kin_summary <- 
   kin_out_2020_2090$kin_summary %>%
@@ -442,17 +498,11 @@ kin_out_2020_2090$kin_full <-
 
 ## Analyzing Kin by Educational Attainment {#education-kin-analysis}
 
-Let's examine the structure of the output:
-
-```{r education_output_show, message=FALSE, warning=FALSE, eval=FALSE}
-kin_out_2020_2090$kin_summary[1000:1010, ]
-```
-
 ### Cohort Analysis of Kin by Education {#education-cohort-analysis}
 
 First, let's visualize the total number of living kin by educational attainment for a woman born in 2020 in Singapore:
 
-```{r education_total_kin, message=FALSE, warning=FALSE, fig.height=6, fig.width=8, eval=FALSE}
+```{r education_total_kin, message=FALSE, warning=FALSE, fig.height=6, fig.width=8, eval=TRUE}
 kin_out_2020_2090$kin_summary %>%
   # Exclude Focal from the analysis
   filter(group != "Focal") %>% 
@@ -475,7 +525,7 @@ kin_out_2020_2090$kin_summary %>%
 
 Now let's look at specific types of relatives:
 
-```{r education_specific_kin, message=FALSE, warning=FALSE, fig.height=6, fig.width=8, eval=FALSE}
+```{r education_specific_kin, message=FALSE, warning=FALSE, fig.height=6, fig.width=8, eval=TRUE}
 kin_out_2020_2090$kin_summary %>%
   filter(group %in% c("d", "gd", "m", "gm")) %>% 
   filter(cohort == 2020) %>%
@@ -496,9 +546,16 @@ kin_out_2020_2090$kin_summary %>%
   theme(legend.position = "bottom")
 ```
 
+**Interpretation** This visualization captures how educational expansion transforms family networks, showing the increasing educational diversity across generations in Singapore:
+
+- The total number of living relatives peaks around age 40-50
+- Relatives with upper secondary education (blue) constitute the largest proportion of the kinship network
+- The educational composition of relatives changes dynamically across the life course
+- At younger ages, relatives have lower educational attainment. As Focal ages, the proportion of higher-educated relatives (green, yellow, and red categories) increases
+
 Let's examine the age and educational distribution of key relatives when the focal individual is 60 years old:
 
-```{r education_age_distribution, message=FALSE, warning=FALSE, fig.height=6, fig.width=10, eval=FALSE}
+```{r education_age_distribution, message=FALSE, warning=FALSE, fig.height=6, fig.width=10, eval=TRUE}
 kin_out_2020_2090$kin_full %>%
   filter(
     group %in%  c("d", "gd", "m", "gm"),
@@ -526,11 +583,18 @@ kin_out_2020_2090$kin_full %>%
   )
 ```
 
+**Interpretation**: This visualization reveals the evolving educational composition of different types of relatives across the life course for a woman born in 2020 in Singapore:
+
+- **Children**: Educational attainment increases with Focal's age, showing a shift towards higher education levels
+- **Grandchildren**: Emerge later in life with a more diverse educational profile
+- **Grandparents**: Predominantly have upper secondary (blue) and lower secondary (teal) education
+- **Parents**: Similar to grandparents, with a concentration of upper secondary education
+
 ### Period Analysis of Kin by Education {#education-period-analysis}
 
 Now let's examine how the educational composition of specific relatives changes over time. First, let's look at the educational attainment of descendants (children and grandchildren) of 60-year-old women across different calendar years:
 
-```{r education_descendants_time, message=FALSE, warning=FALSE, fig.height=6, fig.width=8, eval=FALSE}
+```{r education_descendants_time, message=FALSE, warning=FALSE, fig.height=6, fig.width=8, eval=TRUE}
 kin_out_2020_2090$kin_summary %>%
   filter(
     group %in% c("d", "gd"),
@@ -553,41 +617,25 @@ kin_out_2020_2090$kin_summary %>%
   theme(legend.position = "bottom")
 ```
 
-Finally, let's examine the educational attainment of parents and grandparents of newborn women over time:
+**Interpretation**:
 
-```{r education_ancestors_time, message=FALSE, warning=FALSE, fig.height=6, fig.width=8, eval=FALSE}
-kin_out_2020_2090$kin_summary %>%
-  filter(
-    group %in% c("m", "gm"),
-    age_focal == 0
-  ) %>% 
-  rename(kin = group) %>% 
-  rename_kin(sex = "2sex") %>% 
-  summarise(count = sum(count), .by = c(stage_kin, kin_label, year)) %>%
-  ggplot(aes(x = year, y = count, fill = stage_kin)) +
-  geom_area(colour = "black") +
-  labs(
-    title = "Educational attainment of parents and grandparents over time",
-    subtitle = "For newborn women, Singapore, 2020-2090",
-    y = "Expected number of ancestors",
-    x = "Year",
-    fill = "Educational attainment"
-  ) +
-  facet_grid(. ~ kin_label) +
-  theme_bw() +
-  theme(legend.position = "bottom")
-```
+- **Children**: Concentrated between ages 30-50, with upper secondary education (blue) being most prevalent
+- **Grandchildren**: Mostly young (under 20), with emerging educational diversity
+- **Grandparents**: No longer living at this point
+- **Parents**: Clustered around ages 80-90, with upper secondary and lower secondary education dominating
 
 # Limitations and Assumptions {#limitations}
 
 When implementing these models, we've made several simplifying assumptions due to data limitations:
 
 For the UK parity model:
+
 1. Fertility rates vary with time and parity but are the same across sexes
 2. Mortality rates vary with time and sex but are the same across parity classes
 3. Parity progression probabilities vary with time but are the same across sexes
 
 For the Singapore education model:
+
 1. Fertility rates vary over time and by education but are identical for both sexes
 2. Age-specific education transition probabilities vary over time but not by sex
 3. Educational transitions for young children follow Singapore's Compulsory Education Act
@@ -595,23 +643,20 @@ For the Singapore education model:
 
 These assumptions should be kept in mind when interpreting the results.
 
-# Conclusion {#conclusion}
+# Conclusion
 
-In this vignette, we've explored the implementation of two-sex time-varying multi-state kinship models using the `DemoKin` package. These comprehensive models allow us to analyze kinship networks with unprecedented detail, accounting for sex differences, temporal changes, and individual characteristics simultaneously.
+In this vignette, we've implemented two-sex time-varying multi-state kinship models—the most comprehensive demographic kinship framework currently available. By integrating age, sex, time, and stage dimensions, these models provide unprecedented insights into family structures and their evolution.
 
-Key insights include:
+Our two examples demonstrated the analytical power of this integrated approach:
 
-1. The joint distribution of age, sex, and stage provides a rich picture of kinship networks
-2. Different stage variables (like parity or education) reveal different aspects of family structure
-3. Cohort and period perspectives offer complementary insights into kinship dynamics
-4. Educational expansion and fertility transitions reshape the composition of kin networks in complex ways
+- The parity example revealed how reproductive patterns shape family structures differently for males and females across historical periods
+- The education example showed how educational expansion transforms kinship networks, creating increasingly educated family systems over time
 
-These advanced models have numerous applications in demography, sociology, and public policy, including:
+These comprehensive models have numerous applications across disciplines:
+
 - Understanding intergenerational transmission of socioeconomic status
-- Analyzing care needs and support networks across diverse populations
-- Projecting future family structures in the context of educational expansion
-- Examining how demographic transitions reshape the educational composition of families
-
-The `kin_multi_stage_time_variant_2sex` function provides a powerful tool for researchers interested in these complex questions about family and kinship in changing societies.
+- Analyzing care needs and support networks in diverse populations
+- Projecting how family structures might evolve under different demographic scenarios
+- Exploring how education, health, marriage, and other characteristics intersect with kinship
 
 # References

@@ -19,7 +19,7 @@ You can install the development version of DemoKin from GitHub:
 
 ```r
 # install.packages("remotes")
-remotes::install_github("shajiang93/DemoKin_web")
+remotes::install_github("IvanWilli/DemoKin")
 ```
 
 ## Usage
