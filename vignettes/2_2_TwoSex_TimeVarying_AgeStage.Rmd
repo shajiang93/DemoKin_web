@@ -203,6 +203,7 @@ kin_out_1965_2005 <-
     summary_kin = TRUE,                                 # Produce summary statistics
     sex_Focal = "Female",                               # Focal is female
     initial_stage_Focal = 1,                            # Focal starts at parity 0
+    # model_years <- seq(1965, 2005, 5),                     # the sequence of years we model
     output_years = c(1965, 1975, 1985, 1995, 2005)     # Selected output years
   )
 ```
@@ -438,7 +439,7 @@ Now let's implement the two-sex time-varying multi-state model with education as
 # Define time period and parameters
 time_range <- seq(2020, 2090, 5)
 no_years <- length(time_range) - 1
-output_year_select <- seq(1, no_years + 1, 1)
+output_year <- seq(1, no_years + 1, 1)
 
 # Run the model
 kin_out_2020_2090 <-
@@ -455,7 +456,8 @@ kin_out_2020_2090 <-
     summary_kin = TRUE,                                  # Produce summary statistics
     sex_Focal = "Female",                                # Focal is female
     initial_stage_Focal = 1,                             # Focal starts with no education
-    output_years = output_year_select                    # All years
+    # model_years = output_year,                            # the sequence of years we model
+    output_years = output_year                           # All years
   )
 ```
 
