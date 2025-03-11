@@ -1,3 +1,5 @@
+name: pkgdown
+
 on:
   push:
     branches: [main, master]
@@ -7,7 +9,6 @@ on:
     types: [published]
   workflow_dispatch:
 
-name: pkgdown
 
 jobs:
   pkgdown:

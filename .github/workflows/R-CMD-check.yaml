@@ -1,3 +1,5 @@
+name: R-CMD-check
+
 on:
   push:
     branches: [main, master]
@@ -20,10 +22,11 @@ jobs:
       - name: Install package dependencies
         uses: r-lib/actions/setup-r-dependencies@v2
         with:
-          dependencies: 'true'
+          dependencies: true
 
       - name: Check R package
         uses: r-lib/actions/check-r-package@v2
         with:
           args: '--no-manual'
           error-on: 'error'
+
