@@ -118,6 +118,7 @@ library(DemoKin)  # For kinship analysis
 library(Matrix)   # For matrix operations
 library(tictoc)   # For timing operations
 options(dplyr.summarise.inform = FALSE) # hide summarise output
+source("kin_multi_stage_time_variant_2sex.R")
 ```
 
 # Two-Sex Time-Varying Multi-State Models {#two-sex-time-varying-multi-state}
