@@ -117,16 +117,15 @@ such as kin loss and prevalence of specific conditions among kin.</p>
 <div class="section level2">
 <h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
 </h2>
-<p>Kinship is a fundamental property of human populations and a key form
-of social structure. While the time-invariant model we explored
-previously provides valuable insights, it has one significant
-limitation: it assumes that demographic rates remain constant over time.
-In reality, mortality and fertility rates change substantially across
-decades due to socioeconomic development, medical advances, and cultural
-shifts.</p>
-<p>The time-varying approach offers a more realistic picture of kinship
-dynamics by accounting for these historical demographic changes. This
-extension allows us to:</p>
+<p>While the time-invariant model we explored in the previous vignette
+provides valuable insights into kinship structures, it has one
+significant limitation: it assumes demographic conditions remain
+constant throughout a person’s life. In reality, mortality and fertility
+rates evolve dramatically over time due to socioeconomic development,
+medical advances, and cultural shifts.</p>
+<p>Time-varying kinship models address this limitation by incorporating
+historical demographic changes, offering a more nuanced and realistic
+picture of family networks. These advanced models allow us to:</p>
 <ul>
 <li>Track kinship networks for specific birth cohorts across their life
 course</li>
@@ -138,10 +137,10 @@ historical periods</li>
 structures</li>
 </ul>
 <p>In this vignette, we will implement a <strong>one-sex time-varying
-model</strong>, outlined in Caswell and Song <span class="citation">[-@caswell_formal_2021]</span>, using the
-<code>DemoKin</code> package. We build on the time-invariant approach
-but incorporate year-specific mortality and fertility rates to model the
-kinship networks of individuals born in specific years.</p>
+model</strong>, outlined in Caswell and Song <span class="citation">(2021)</span>, using the <code>DemoKin</code> package.
+We build on the time-invariant approach but incorporate year-specific
+mortality and fertility rates to model the kinship networks of
+individuals born in specific years.</p>
 <div class="section level3">
 <h3 id="preparation">Package Installation<a class="anchor" aria-label="anchor" href="#preparation"></a>
 </h3>
@@ -280,10 +279,10 @@ reflecting pre-1960 mortality, then declining rapidly</li>
 quickly disappearing</li>
 <li>
 <strong>Daughters (d)</strong>: Increasing during reproductive
-years, reflecting fertility patterns of the 1980s-1990s</li>
+years, reflecting fertility patterns of the 1980s-2000s</li>
 <li>
 <strong>Granddaughters (gd)</strong>: Appearing as daughters reach
-reproductive age, reflecting fertility of the 2000s-2010s</li>
+reproductive age, reflecting fertility of the 2000s-2030s</li>
 <li>
 <strong>Great-granddaughters (ggd)</strong>: Beginning to appear in
 later years</li>
@@ -297,10 +296,13 @@ by this cohort and their relatives.</p>
 <h3 id="kin-loss">Analyzing Kin Loss<a class="anchor" aria-label="anchor" href="#kin-loss"></a>
 </h3>
 <p>Beyond counting living kin, we can also examine patterns of kin
-mortality. Understanding kin loss is important because it: - Has
-psychological and social consequences for bereaved individuals - Affects
-the availability of support and care across generations - Influences
-patterns of inheritance and resource transfers</p>
+mortality. Understanding kin loss is important because it:</p>
+<ul>
+<li>Has psychological and social consequences for bereaved
+individuals</li>
+<li>Affects the availability of support and care across generations</li>
+<li>Influences patterns of inheritance and resource transfers</li>
+</ul>
 <p>Let’s examine the cumulative number of deceased relatives by age for
 our 1960 birth cohort:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
@@ -375,10 +377,10 @@ great-grandchildren</li>
 </tr>
 </tbody>
 </table>
-<p>This table shows both the number of deceased relatives and the mean
-age at which they died. For example, by age 50, a woman born in 1960
-would have lost approximately 0.58 mothers at a mean age of 74.83
-years.</p>
+<p>This table shows both the expected number of deceased relatives and
+the mean age at which they died. For example, by age 50, a woman born in
+1960 would have lost approximately 0.32 mothers and the age at which
+such women lost mother is around 37.83 years-old on average.</p>
 </div>
 <div class="section level3">
 <h3 id="prevelances">Prevalence Calculations<a class="anchor" aria-label="anchor" href="#prevelances"></a>
@@ -437,59 +439,56 @@ remains low, consistent with the age pattern of the condition</li>
 changing composition by condition status</li>
 </ul>
 <p>This approach can be extended to any age-specific prevalence, such
-as: - Health conditions (disability, chronic disease) - Employment
-status - Educational attainment - Living arrangements</p>
+as:</p>
+<ul>
+<li>Health conditions (disability, chronic disease)</li>
+<li>Employment status</li>
+<li>Educational attainment</li>
+<li>Living arrangements</li>
+</ul>
 </div>
-</div>
-<div class="section level2">
-<h2 id="comparing-time-invariant-and-time-varying-models">Comparing Time-Invariant and Time-Varying Models<a class="anchor" aria-label="anchor" href="#comparing-time-invariant-and-time-varying-models"></a>
-</h2>
-<p>The time-varying approach offers several advantages over
-time-invariant models:</p>
-<ol style="list-style-type: decimal">
-<li>
-<strong>Historical accuracy</strong>: It incorporates actual
-demographic changes over time rather than assuming constant rates</li>
-<li>
-<strong>Cohort specificity</strong>: It can model specific birth
-cohorts experiencing their unique demographic conditions</li>
-<li>
-<strong>Period effects</strong>: It captures major demographic
-events like wars, pandemics, or baby booms</li>
-</ol>
-<p>However, time-invariant models still have their uses: - They provide
-a simpler baseline for understanding kinship patterns - They can project
-future kinship structures based on current demographic conditions - They
-require less data (only rates for a single year)</p>
-<p>For contemporary populations that have undergone substantial
-demographic transition, the differences between these approaches can be
-significant, especially for older individuals whose relatives lived
-through periods of rapid demographic change.</p>
 </div>
 <div class="section level2">
 <h2 id="conclusion">Conclusion<a class="anchor" aria-label="anchor" href="#conclusion"></a>
 </h2>
 <p>In this vignette, we’ve explored how to implement time-varying
-kinship models using the <code>DemoKin</code> package. By incorporating
-historical demographic rates, these models provide more realistic
-estimates of kin availability across the life course for specific birth
-cohorts.</p>
-<p>Key extensions we’ve covered include: 1. Implementing one-sex
-time-varying models for specific birth cohorts 2. Analyzing patterns of
-kin loss and bereavement 3. Combining kinship estimates with prevalence
-data to understand kin characteristics</p>
-<p>These methods have important applications in: - Historical demography
-and family sociology - Intergenerational support and care systems -
-Understanding how demographic transitions reshape family structures -
-Projecting future care needs in aging societies</p>
-<p>Advanced users might explore further extensions such as: - Two-sex
-time-varying models - Multi-state models incorporating marriage,
-migration, or other transitions - Microsimulation approaches for more
-complex kinship dynamics</p>
+kinship models using the <code>DemoKin</code> package, expanding our
+analytical approach to incorporate historical demographic change.</p>
+<p>The time-varying approach offers several advantages over
+time-invariant models: 1. <strong>Historical accuracy</strong>: It
+incorporates actual demographic changes rather than assuming constant
+rates 2. <strong>Cohort specificity</strong>: It can model specific
+birth cohorts experiencing their unique demographic conditions 3.
+<strong>Period effects</strong>: It captures major demographic events
+like wars, pandemics, or baby booms</p>
+<p>These methodological improvements allow us to uncover important
+substantive insights:</p>
+<ul>
+<li>How demographic transitions reshape family structures across
+generations</li>
+<li>The unique kinship experiences of different birth cohorts as they
+navigate through changing mortality and fertility regimes</li>
+<li>How kin loss and bereavement patterns evolve in response to
+mortality improvements</li>
+<li>The complex interplay between period and cohort effects in shaping
+family networks</li>
+</ul>
+<p>While time-varying models provide greater realism, time-invariant
+models still serve valuable purposes. They offer a simpler baseline for
+understanding kinship patterns, can project future kinship structures
+based on current demographic conditions, and require less data.</p>
 </div>
 <div class="section level2">
-<h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
+<h2 class="unnumbered" id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
 </h2>
+<div id="refs" class="references csl-bib-body hanging-indent" entry-spacing="0">
+<div id="ref-caswell_formal_2021" class="csl-entry">
+Caswell, Hal, and Xi Song. 2021. <span>“The Formal Demography of Kinship
+<span>III</span>: <span>Kinship</span> Dynamics with Time-Varying
+Demographic Rates.”</span> <em>Demographic Research</em> 45 (August):
+517–46. <a href="https://doi.org/10.4054/DemRes.2021.45.16" class="external-link">https://doi.org/10.4054/DemRes.2021.45.16</a>.
+</div>
+</div>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>

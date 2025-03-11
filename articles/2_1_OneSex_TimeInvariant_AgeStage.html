@@ -135,11 +135,11 @@ between parity states)</li>
 structures</li>
 <li>Provide more nuanced estimates of kinship dynamics</li>
 </ul>
-<p>In this vignette, we will implement a <strong>one-sex time-invariant
-multi-state kinship model</strong>, outlined in Caswell <span class="citation">[-@caswell_formal_2020]</span>, using the
-<code>DemoKin</code> package. We’ll focus specifically on parity as our
-stage variable, which allows us to analyze how fertility history affects
-kinship networks.</p>
+<p>In this vignette, we will start from a simple model, <strong>one-sex
+time-invariant multi-state kinship model</strong>, outlined in Caswell
+<span class="citation">(2020)</span>, using the <code>DemoKin</code>
+package. We’ll focus specifically on parity as our stage variable, which
+allows us to analyze how fertility history affects kinship networks.</p>
 <div class="section level3">
 <h3 id="preparation">Package Installation<a class="anchor" aria-label="anchor" href="#preparation"></a>
 </h3>
@@ -227,24 +227,22 @@ structure of the Slovakia data included in the <code>DemoKin</code>
 package:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Examine fertility rates by age and parity</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">svk_fxs</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span>, <span class="op">]</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">svk_fxs</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span>, <span class="op">]</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">##     1 2 3 4 5 6</span></span>
 <span><span class="co">## out 0 0 0 0 0 0</span></span>
-<span><span class="co">## elt 0 0 0 0 0 0</span></span>
 <span><span class="co">## elt 0 0 0 0 0 0</span></span>
 <span><span class="co">## elt 0 0 0 0 0 0</span></span>
 <span><span class="co">## elt 0 0 0 0 0 0</span></span>
 <span><span class="co">## elt 0 0 0 0 0 0</span></span></code></pre>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Examine survival probabilities by age and parity</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">svk_pxs</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span>, <span class="op">]</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">svk_pxs</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span>, <span class="op">]</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">##            1       2       3       4       5       6</span></span>
 <span><span class="co">## [1,] 0.98267 0.98267 0.98267 0.98267 0.98267 0.98267</span></span>
 <span><span class="co">## [2,] 0.99858 0.99858 0.99858 0.99858 0.99858 0.99858</span></span>
 <span><span class="co">## [3,] 0.99928 0.99928 0.99928 0.99928 0.99928 0.99928</span></span>
 <span><span class="co">## [4,] 0.99962 0.99962 0.99962 0.99962 0.99962 0.99962</span></span>
-<span><span class="co">## [5,] 0.99979 0.99979 0.99979 0.99979 0.99979 0.99979</span></span>
-<span><span class="co">## [6,] 0.99961 0.99961 0.99961 0.99961 0.99961 0.99961</span></span></code></pre>
+<span><span class="co">## [5,] 0.99979 0.99979 0.99979 0.99979 0.99979 0.99979</span></span></code></pre>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Examine birth matrix (where newborns enter the population)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">svk_Hxs</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span>, <span class="op">]</span><span class="op">)</span></span></code></pre></div>
@@ -286,10 +284,15 @@ parity</li>
 containing the probabilities of transitioning between parity states
 conditional on survival</li>
 </ul>
-<p>For parity, the stages represent: - Stage 1: Parity 0 (no children) -
-Stage 2: Parity 1 (one child) - Stage 3: Parity 2 (two children) - Stage
-4: Parity 3 (three children) - Stage 5: Parity 4 (four children) - Stage
-6: Parity 5+ (five or more children)</p>
+<p>For parity, the stages represent:</p>
+<ul>
+<li>Stage 1: Parity 0 (no children)</li>
+<li>Stage 2: Parity 1 (one child)</li>
+<li>Stage 3: Parity 2 (two children)</li>
+<li>Stage 4: Parity 3 (three children)</li>
+<li>Stage 5: Parity 4 (four children)</li>
+<li>Stage 6: Parity 5+ (five or more children)</li>
+</ul>
 <p>Let’s examine the transition matrix for a woman of reproductive age
 to understand how women move between parity states:</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
@@ -304,15 +307,15 @@ to understand how women move between parity states:</p>
 <span><span class="co">## [5,] 0.0000000 0.0000000 0.00000000 0.07993241 0.8674747    0</span></span>
 <span><span class="co">## [6,] 0.0000000 0.0000000 0.00000000 0.00000000 0.1325253    1</span></span></code></pre>
 <p>This matrix shows the probabilities of moving from one parity state
-(rows) to another (columns) for a 25-year-old woman, conditional on
+(columns) to another (rows) for a 25-year-old woman, conditional on
 survival. Some key observations:</p>
 <ul>
-<li>The matrix is upper-triangular because parity can only increase
-(women can’t “un-have” children)</li>
+<li>The matrix shows transitions from column j (starting parity) to row
+i (ending parity)</li>
 <li>The diagonal elements represent the probability of remaining in the
 same parity state</li>
-<li>Values in the upper-diagonal represent the probability of having
-another child</li>
+<li>Non-zero values appear only in the lower-triangular portion because
+parity can only increase (women can’t “un-have” children)</li>
 <li>Women at higher parities generally have lower probabilities of
 having another child</li>
 </ul>
@@ -373,14 +376,14 @@ distribution of age and parity for aunts at two different focal
 ages:</p>
 <ul>
 <li>
-<strong>When Focal is 20</strong>: Aunts are mostly middle-aged
-(30s-50s) and concentrated in parities 2-3, reflecting the fertility
-patterns of that generation</li>
+<strong>When Focal is 20</strong> (upper panel): Aunts are mostly
+middle-aged (30s-50s) and concentrated in parities 2-3, reflecting the
+fertility patterns of that generation</li>
 <li>
-<strong>When Focal is 60</strong>: Aunts are much older (if still
-alive) and show a similar parity distribution, though with more
-high-parity individuals due to the fertility patterns of earlier
-cohorts</li>
+<strong>When Focal is 60</strong> (lower panel): Aunts are much
+older (if still alive) and show a similar parity distribution, though
+with more high-parity individuals due to the fertility patterns of
+earlier cohorts</li>
 </ul>
 <p>The red vertical line indicates Focal’s age, providing a reference
 point for comparing the ages of relatives. This joint distribution
@@ -421,9 +424,14 @@ life course:</p>
 <ul>
 <li>Most mothers are in parity 2-3, reflecting the dominant family size
 in this population</li>
-<li>The composition is relatively stable over Focal’s life, with slight
-changes due to differential mortality by parity</li>
-<li>The total number decreases with age as mothers die</li>
+<li>At Focal’s birth (age 0), mothers are necessarily at parity 1 or
+higher (as they must have at least one child - the Focal
+individual)</li>
+<li>The mothers’ parity distribution shows a gradual shift toward higher
+parities when Focal is young, as some mothers continue to have
+additional children</li>
+<li>The composition is relatively stable after Focal reaches adulthood,
+with slight changes due to differential mortality by parity</li>
 </ul>
 </li>
 <li>
@@ -441,32 +449,6 @@ then remains stable</li>
 <p>These patterns highlight the intergenerational transmission of
 fertility behaviors and how demographic patterns ripple through kinship
 networks.</p>
-</div>
-<div class="section level2">
-<h2 id="applications-of-multi-state-kinship-models">Applications of Multi-State Kinship Models<a class="anchor" aria-label="anchor" href="#applications-of-multi-state-kinship-models"></a>
-</h2>
-<p>Multi-state kinship models have numerous applications beyond what
-we’ve explored here:</p>
-<ol style="list-style-type: decimal">
-<li>
-<strong>Health status transitions</strong>: Analyzing how health
-conditions affect and are affected by kinship networks</li>
-<li>
-<strong>Educational attainment</strong>: Exploring how education
-levels influence family formation and structure</li>
-<li>
-<strong>Marital status</strong>: Incorporating marriage, divorce,
-and widowhood into kinship dynamics</li>
-<li>
-<strong>Geographical location</strong>: Modeling proximity and
-migration within kinship networks</li>
-<li>
-<strong>Labor force participation</strong>: Understanding how work
-patterns interact with family structures</li>
-</ol>
-<p>The <code>kin_multi_stage</code> function can be used for any state
-variable (not just parity) by setting the parameter
-<code>parity = FALSE</code> (the default).</p>
 </div>
 <div class="section level2">
 <h2 id="conclusion">Conclusion<a class="anchor" aria-label="anchor" href="#conclusion"></a>
@@ -487,17 +469,38 @@ the life course</li>
 <li>Stage transitions (e.g., between parity states) are a key component
 of kinship dynamics</li>
 </ol>
-<p>These methods provide a more comprehensive framework for
-understanding how demographic processes shape family structures and how
-these structures evolve over time.</p>
-<p>In future extensions, this multi-state framework could be combined
-with: - Time-varying rates to account for historical changes - Two-sex
-models to incorporate sex-specific patterns - Multiple stage variables
-to capture even more complex demographic processes</p>
+<p>While we focused on parity in this vignette, the
+<code>kin_multi_stage</code> function can be used for any state variable
+by setting the parameter <code>parity = FALSE</code> (the default). This
+flexibility opens up numerous applications:</p>
+<ol style="list-style-type: decimal">
+<li>
+<strong>Health status transitions</strong>: Analyzing how health
+conditions affect and are affected by kinship networks</li>
+<li>
+<strong>Educational attainment</strong>: Exploring how education
+levels influence family formation and structure</li>
+<li>
+<strong>Marital status</strong>: Incorporating marriage, divorce,
+and widowhood into kinship dynamics</li>
+<li>
+<strong>Geographical location</strong>: Modeling proximity and
+migration within kinship networks</li>
+<li>
+<strong>Labor force participation</strong>: Understanding how work
+patterns interact with family structures</li>
+</ol>
 </div>
 <div class="section level2">
-<h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
+<h2 class="unnumbered" id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
 </h2>
+<div id="refs" class="references csl-bib-body hanging-indent" entry-spacing="0">
+<div id="ref-caswell_formal_2020" class="csl-entry">
+Caswell, Hal. 2020. <span>“The Formal Demography of Kinship
+<span>II</span>: <span>Multistate</span> Models, Parity, and
+Sibship.”</span> <em>Demographic Research</em> 42 (June): 1097–1146. <a href="https://doi.org/10.4054/DemRes.2020.42.38" class="external-link">https://doi.org/10.4054/DemRes.2020.42.38</a>.
+</div>
+</div>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>

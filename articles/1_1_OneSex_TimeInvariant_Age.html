@@ -108,9 +108,9 @@
 </style>
 <div class="learning-objectives">
 <p><strong>Learning Objectives</strong>: In this tutorial, you will
-learn how to use the DemoKin package to analyze family structure and
-kinship networks, understand the mechanics of time-invariant models, and
-visualize changes in kinship relations across the life course.</p>
+learn how to use the DemoKin package to analyze kinship networks,
+understand the mechanics of one-sex time-invariant models, and visualize
+kinship dynamics across the life course.</p>
 </div>
 <div class="section level2">
 <h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
@@ -123,19 +123,18 @@ approaches for the study of kinship, some of which are explored in this
 tutorial.</p>
 <p>Kinship analysis can answer a range of important questions:</p>
 <ul>
-<li>How does family size change over an individual’s life course?</li>
-<li>How does family structure evolve as populations undergo demographic
-transition?</li>
 <li>How many relatives might people have at different ages, and what is
 the age distribution of these relatives?</li>
+<li>How does family structure (both the number and age distribution of
+kin) evolve as populations undergo demographic transition?</li>
 </ul>
 <p>In this tutorial, we will implement matrix kinship models using the
 <code>DemoKin</code> package to calculate kin counts and age
 distributions. We begin with the simplest model: a
-<strong>time-invariant one-sex model</strong>, outlined in Caswell <span class="citation">[-@caswell_formal_2019]</span>. In this model, we
-assume that everyone in the population experiences the same mortality
-and fertility rates throughout their lives (e.g., the 2015 rates), and
-we only trace female kin relationships.</p>
+<strong>time-invariant one-sex model</strong>, outlined in Caswell <span class="citation">(2019)</span>. In this model, we assume that everyone
+in the population experiences the same mortality and fertility rates
+throughout their lives (e.g., the 2015 rates), and we only trace female
+kin relationships.</p>
 <div class="section level3">
 <h3 id="preparation">Preparation<a class="anchor" aria-label="anchor" href="#preparation"></a>
 </h3>
@@ -212,39 +211,31 @@ counts</li>
 <p>Let’s examine a subset of the Swedish demographic data to understand
 its structure:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># First 10 rows and columns of survival probabilities</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">swe_px</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">##      1900    1901    1902    1903    1904    1905    1906    1907    1908</span></span>
-<span><span class="co">## 0 0.91060 0.90673 0.92298 0.91890 0.92357 0.92094 0.92717 0.93134 0.92217</span></span>
-<span><span class="co">## 1 0.97225 0.97293 0.97528 0.97549 0.97847 0.97844 0.98066 0.98175 0.97928</span></span>
-<span><span class="co">## 2 0.98525 0.98579 0.98630 0.98835 0.98921 0.98914 0.99050 0.99149 0.99135</span></span>
-<span><span class="co">## 3 0.98998 0.98947 0.99079 0.99125 0.99226 0.99112 0.99341 0.99351 0.99383</span></span>
-<span><span class="co">## 4 0.99158 0.99133 0.99231 0.99352 0.99272 0.99300 0.99392 0.99539 0.99526</span></span>
-<span><span class="co">## 5 0.99310 0.99253 0.99401 0.99388 0.99468 0.99394 0.99542 0.99587 0.99570</span></span>
-<span><span class="co">##      1909</span></span>
-<span><span class="co">## 0 0.93524</span></span>
-<span><span class="co">## 1 0.98415</span></span>
-<span><span class="co">## 2 0.99200</span></span>
-<span><span class="co">## 3 0.99429</span></span>
-<span><span class="co">## 4 0.99560</span></span>
-<span><span class="co">## 5 0.99624</span></span></code></pre>
+<code class="sourceCode R"><span><span class="co"># First 5 rows and columns of survival probabilities</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">swe_px</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">##      1900    1901    1902    1903    1904</span></span>
+<span><span class="co">## 0 0.91060 0.90673 0.92298 0.91890 0.92357</span></span>
+<span><span class="co">## 1 0.97225 0.97293 0.97528 0.97549 0.97847</span></span>
+<span><span class="co">## 2 0.98525 0.98579 0.98630 0.98835 0.98921</span></span>
+<span><span class="co">## 3 0.98998 0.98947 0.99079 0.99125 0.99226</span></span>
+<span><span class="co">## 4 0.99158 0.99133 0.99231 0.99352 0.99272</span></span></code></pre>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Fertility rates for ages 20-30</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">swe_asfr</span><span class="op">[</span><span class="fl">20</span><span class="op">:</span><span class="fl">30</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="co"># Fertility rates for ages 25-30</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">swe_asfr</span><span class="op">[</span><span class="fl">26</span><span class="op">:</span><span class="fl">31</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">##       1900    1901    1902    1903    1904    1905    1906    1907    1908</span></span>
-<span><span class="co">## 19 0.04409 0.04357 0.04742 0.04380 0.04523 0.04415 0.04779 0.04910 0.05205</span></span>
-<span><span class="co">## 20 0.06776 0.07122 0.06989 0.06792 0.06952 0.06981 0.07187 0.07211 0.07994</span></span>
-<span><span class="co">## 21 0.09643 0.09931 0.09613 0.09654 0.09546 0.09437 0.09761 0.10108 0.10547</span></span>
-<span><span class="co">## 22 0.12512 0.12555 0.12526 0.11899 0.12269 0.11923 0.12264 0.12384 0.12738</span></span>
-<span><span class="co">## 23 0.14631 0.14792 0.14743 0.14237 0.14304 0.14502 0.14433 0.14440 0.14694</span></span>
-<span><span class="co">## 24 0.16285 0.16847 0.16455 0.16279 0.15931 0.15960 0.16276 0.16271 0.16524</span></span>
+<span><span class="co">## 25 0.18104 0.18322 0.17980 0.17339 0.17595 0.17445 0.17302 0.17246 0.17631</span></span>
+<span><span class="co">## 26 0.18762 0.19279 0.19170 0.18754 0.18431 0.18248 0.18763 0.18405 0.18594</span></span>
+<span><span class="co">## 27 0.19838 0.20267 0.19365 0.19035 0.19298 0.19016 0.19172 0.18634 0.18591</span></span>
+<span><span class="co">## 28 0.20742 0.20543 0.19983 0.19558 0.19680 0.19696 0.19541 0.19489 0.19251</span></span>
+<span><span class="co">## 29 0.20192 0.21060 0.20264 0.19938 0.19541 0.19482 0.19236 0.19205 0.19452</span></span>
+<span><span class="co">## 30 0.20518 0.20504 0.20148 0.19700 0.19511 0.19698 0.19862 0.19192 0.19245</span></span>
 <span><span class="co">##       1909</span></span>
-<span><span class="co">## 19 0.05274</span></span>
-<span><span class="co">## 20 0.07930</span></span>
-<span><span class="co">## 21 0.10456</span></span>
-<span><span class="co">## 22 0.12639</span></span>
-<span><span class="co">## 23 0.14607</span></span>
-<span><span class="co">## 24 0.16087</span></span></code></pre>
+<span><span class="co">## 25 0.17423</span></span>
+<span><span class="co">## 26 0.18250</span></span>
+<span><span class="co">## 27 0.18912</span></span>
+<span><span class="co">## 28 0.19381</span></span>
+<span><span class="co">## 29 0.18839</span></span>
+<span><span class="co">## 30 0.18975</span></span></code></pre>
 <p>For our time-invariant model, we need to extract the demographic
 rates for a single year. Let’s use 2015 as our reference year:</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
@@ -252,28 +243,28 @@ rates for a single year. Let’s use 2015 as our reference year:</p>
 <span><span class="va">swe_surv_2015</span> <span class="op">&lt;-</span> <span class="va">swe_px</span><span class="op">[</span>,<span class="st">"2015"</span><span class="op">]</span>  <span class="co"># Survival probabilities</span></span>
 <span><span class="va">swe_asfr_2015</span> <span class="op">&lt;-</span> <span class="va">swe_asfr</span><span class="op">[</span>,<span class="st">"2015"</span><span class="op">]</span> <span class="co"># Fertility rates</span></span></code></pre></div>
 <p>Let’s compare the data between different time periods to understand
-demographic changes. Here we compare values from 1950 and 2000:</p>
+demographic changes. Here we compare values from 1950 and 2010:</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Survival probabilities</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"Survival probabilities (px):\n"</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## Survival probabilities (px):</span></span></code></pre>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">swe_px</span><span class="op">[</span>,<span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"1950"</span>,<span class="st">"2000"</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">##      1950    2000</span></span>
-<span><span class="co">## 0 0.98237 0.99717</span></span>
-<span><span class="co">## 1 0.99833 0.99984</span></span>
-<span><span class="co">## 2 0.99885 0.99986</span></span>
-<span><span class="co">## 3 0.99904 0.99996</span></span>
-<span><span class="co">## 4 0.99938 0.99988</span></span>
-<span><span class="co">## 5 0.99920 0.99992</span></span></code></pre>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">swe_px</span><span class="op">[</span>,<span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"1950"</span>,<span class="st">"2010"</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">##      1950    2010</span></span>
+<span><span class="co">## 0 0.98237 0.99760</span></span>
+<span><span class="co">## 1 0.99833 0.99972</span></span>
+<span><span class="co">## 2 0.99885 0.99989</span></span>
+<span><span class="co">## 3 0.99904 0.99991</span></span>
+<span><span class="co">## 4 0.99938 0.99992</span></span>
+<span><span class="co">## 5 0.99920 0.99994</span></span></code></pre>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Fertility rates</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"\nFertility rates (asfr):\n"</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## </span></span>
 <span><span class="co">## Fertility rates (asfr):</span></span></code></pre>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">swe_asfr</span><span class="op">[</span>,<span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"1950"</span>,<span class="st">"2000"</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">##   1950 2000</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">swe_asfr</span><span class="op">[</span>,<span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"1950"</span>,<span class="st">"2010"</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">##   1950 2010</span></span>
 <span><span class="co">## 0    0    0</span></span>
 <span><span class="co">## 1    0    0</span></span>
 <span><span class="co">## 2    0    0</span></span>
@@ -286,14 +277,14 @@ demographic changes. Here we compare values from 1950 and 2000:</p>
 <pre><code><span><span class="co">## </span></span>
 <span><span class="co">## Population counts:</span></span></code></pre>
 <div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">swe_pop</span><span class="op">[</span>,<span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"1950"</span>,<span class="st">"2000"</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">##    1950  2000</span></span>
-<span><span class="co">## 0 57780 43058</span></span>
-<span><span class="co">## 1 60451 43599</span></span>
-<span><span class="co">## 2 61288 44356</span></span>
-<span><span class="co">## 3 62970 46880</span></span>
-<span><span class="co">## 4 63089 50383</span></span>
-<span><span class="co">## 5 62963 55150</span></span></code></pre>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">swe_pop</span><span class="op">[</span>,<span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"1950"</span>,<span class="st">"2010"</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">##    1950  2010</span></span>
+<span><span class="co">## 0 57780 54400</span></span>
+<span><span class="co">## 1 60451 53714</span></span>
+<span><span class="co">## 2 61288 53495</span></span>
+<span><span class="co">## 3 62970 53263</span></span>
+<span><span class="co">## 4 63089 51524</span></span>
+<span><span class="co">## 5 62963 51321</span></span></code></pre>
 </div>
 <div class="section level3">
 <h3 id="visualizing-demographic-trends">Visualizing Demographic Trends<a class="anchor" aria-label="anchor" href="#visualizing-demographic-trends"></a>
@@ -314,13 +305,13 @@ for different years:</p>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>age <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span><span class="op">:</span><span class="fl">100</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html" class="external-link">pivot_longer</a></span><span class="op">(</span>cols <span class="op">=</span> <span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">age</span><span class="op">)</span>, names_to <span class="op">=</span> <span class="st">"year"</span>, values_to <span class="op">=</span> <span class="st">"px"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">year</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">1950</span>, <span class="fl">2020</span>, <span class="fl">30</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">year</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">1950</span>, <span class="fl">2010</span>, <span class="fl">30</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>qx <span class="op">=</span> <span class="fl">1</span><span class="op">-</span><span class="va">px</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">age</span>, y <span class="op">=</span> <span class="va">qx</span>, col <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="va">year</span><span class="op">)</span><span class="op">)</span>, linewidth <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html" class="external-link">scale_y_log10</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span></span>
-<span>    title <span class="op">=</span> <span class="st">"Age-specific mortality in Sweden (1950-2020)"</span>,</span>
+<span>    title <span class="op">=</span> <span class="st">"Age-specific mortality in Sweden (1950-2010)"</span>,</span>
 <span>    subtitle <span class="op">=</span> <span class="st">"Probability of dying between ages x and x+1"</span>,</span>
 <span>    x <span class="op">=</span> <span class="st">"Age"</span>,</span>
 <span>    y <span class="op">=</span> <span class="st">"Probability of dying (qx, log scale)"</span>, </span>
@@ -330,7 +321,7 @@ for different years:</p>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>legend.position <span class="op">=</span> <span class="st">"bottom"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="1_1_OneSex_TimeInvariant_Age_files/figure-html/mortality_viz-1.png" width="2400" style="display: block; margin: auto;"></p>
 <p><strong>Interpretation</strong>: This graph reveals how mortality has
-declined dramatically across all age groups from 1950 to 2020. The log
+declined dramatically across all age groups from 1950 to 2010. The log
 scale highlights improvements at all ages, with particularly notable
 declines in infant and child mortality. The characteristic “bathtub”
 shape of human mortality is clearly visible: high mortality in infancy,
@@ -346,11 +337,11 @@ then a steady exponential increase with age.</p>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>age <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span><span class="op">:</span><span class="fl">100</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html" class="external-link">pivot_longer</a></span><span class="op">(</span>cols <span class="op">=</span> <span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">age</span><span class="op">)</span>, names_to <span class="op">=</span> <span class="st">"year"</span>, values_to <span class="op">=</span> <span class="st">"fx"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">year</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">1950</span>, <span class="fl">2020</span>, <span class="fl">30</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">year</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">1950</span>, <span class="fl">2010</span>, <span class="fl">30</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> </span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">age</span>, y <span class="op">=</span> <span class="va">fx</span>, col <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="va">year</span><span class="op">)</span><span class="op">)</span>, linewidth <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span></span>
-<span>    title <span class="op">=</span> <span class="st">"Age-specific fertility in Sweden (1950-2020)"</span>,</span>
+<span>    title <span class="op">=</span> <span class="st">"Age-specific fertility in Sweden (1950-2010)"</span>,</span>
 <span>    subtitle <span class="op">=</span> <span class="st">"Fertility rates by age of mother"</span>,</span>
 <span>    x <span class="op">=</span> <span class="st">"Age of mother"</span>,</span>
 <span>    y <span class="op">=</span> <span class="st">"Age-specific fertility rate (fx)"</span>, </span>
@@ -361,11 +352,10 @@ then a steady exponential increase with age.</p>
 <p><img src="1_1_OneSex_TimeInvariant_Age_files/figure-html/fertility_viz-1.png" width="2400" style="display: block; margin: auto;"></p>
 <p><strong>Interpretation</strong>: This visualization shows how
 fertility patterns have changed over the decades. The 1950 curve shows
-earlier childbearing with higher peak fertility rates. By 2020,
-fertility has shifted to later ages, with lower peak rates but a wider
-distribution across ages, reflecting the postponement of childbearing in
-developed countries. We can also observe the declining total fertility
-rate (the area under each curve).</p>
+earlier childbearing with higher peak fertility rates. By 2010,
+fertility has shifted to later ages, reflecting the postponement of
+childbearing in developed countries. We can also observe the declining
+total fertility rate (the area under each curve).</p>
 </div>
 <div class="section level4">
 <h4 id="population-structure">Population Structure<a class="anchor" aria-label="anchor" href="#population-structure"></a>
@@ -377,11 +367,11 @@ rate (the area under each curve).</p>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>age <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span><span class="op">:</span><span class="fl">100</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html" class="external-link">pivot_longer</a></span><span class="op">(</span><span class="op">-</span><span class="va">age</span>, names_to <span class="op">=</span> <span class="st">"year"</span>, values_to <span class="op">=</span> <span class="st">"pop"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>year <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">gsub</a></span><span class="op">(</span><span class="st">"X"</span>, <span class="st">""</span>, <span class="va">year</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">year</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">1950</span>, <span class="fl">2020</span>, <span class="fl">30</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">year</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">1950</span>, <span class="fl">2010</span>, <span class="fl">30</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> </span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">age</span>, y <span class="op">=</span> <span class="va">pop</span>, col <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="va">year</span><span class="op">)</span><span class="op">)</span>, linewidth <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span></span>
-<span>    title <span class="op">=</span> <span class="st">"Female population structure in Sweden (1950-2020)"</span>,</span>
+<span>    title <span class="op">=</span> <span class="st">"Female population structure in Sweden (1950-2010)"</span>,</span>
 <span>    subtitle <span class="op">=</span> <span class="st">"Population counts by age"</span>,</span>
 <span>    x <span class="op">=</span> <span class="st">"Age"</span>,</span>
 <span>    y <span class="op">=</span> <span class="st">"Population count (thousands)"</span>, </span>
@@ -392,7 +382,7 @@ rate (the area under each curve).</p>
 <p><img src="1_1_OneSex_TimeInvariant_Age_files/figure-html/population_viz-1.png" width="2400" style="display: block; margin: auto;"></p>
 <p><strong>Interpretation</strong>: This graph shows how Sweden’s female
 population structure has changed over time. The 1950 distribution shows
-the effects of baby booms and war years. By 2020, we see population
+the effects of baby booms and war years. By 2010, we see population
 aging with a more uniform distribution across ages and greater
 longevity, with significant numbers of women surviving to very old
 ages.</p>
@@ -461,8 +451,8 @@ types to return (e.g., “m” for mother, “d” for daughter)</li>
 <h3 id="relative-types">Relative Types<a class="anchor" aria-label="anchor" href="#relative-types"></a>
 </h3>
 <p>In <code>DemoKin</code>, each type of relative is identified by a
-unique code. These codes differ from those used in Caswell <span class="citation">[-@caswell_formal_2019]</span>. The following table
-shows the relationship between these coding systems:</p>
+unique code. These codes differ from those used in Caswell <span class="citation">(2019)</span>. The following table shows the
+relationship between these coding systems:</p>
 <div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Display relationship codes</span></span>
 <span><span class="va">demokin_codes</span></span></code></pre></div>
@@ -581,9 +571,9 @@ age of kin)</p>
 <h3 id="keyfitz-diagrams">Keyfitz Diagrams<a class="anchor" aria-label="anchor" href="#keyfitz-diagrams"></a>
 </h3>
 <p>One powerful way to visualize kinship structure is through a network
-or ‘Keyfitz’ kinship diagram <span class="citation">[@Keyfitz2005]</span>. Let’s see the expected number of
-living female relatives for a 65-year-old woman according to our
-model:</p>
+or ‘Keyfitz’ kinship diagram <span class="citation">(Keyfitz, Caswell,
+et al. 2005)</span>. Let’s see the expected number of living female
+relatives for a 65-year-old woman according to our model:</p>
 <div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">swe_2015</span><span class="op">$</span><span class="va">kin_summary</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">age_focal</span> <span class="op">==</span> <span class="fl">65</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
@@ -594,12 +584,12 @@ comprehensive view of the kinship network for a 65-year-old woman in
 Sweden (based on 2015 demographic rates). The diagram shows:</p>
 <ul>
 <li>Vertical relationships: A 65-year-old woman is likely to have around
-1.85 daughters and 1.73 granddaughters, but few great-granddaughters
-(0.17) as they wouldn’t have been born yet. Looking upward, she’s
-unlikely to have a living mother (0.12) and almost certainly no living
-grandmother.</li>
-<li>Horizontal relationships: She would have about 0.93 living sisters
-and 1.74 nieces.</li>
+0.9 daughters and 0.52 granddaughters through daughters, but few
+great-granddaughters (nearly 0) as they wouldn’t have been born yet.
+Looking upward, she’s unlikely to have a living mother (0.16) and almost
+certainly no living grandmother (nearly 0).</li>
+<li>Horizontal relationships: She would have about 0.83 living sisters
+(0.38 old sisters and 0.45 younger sisters) and 0.8 nieces.</li>
 </ul>
 <p>This visualization helps us understand the changing composition of
 family networks across the life course.</p>
@@ -658,6 +648,8 @@ mortality</li>
 <li>
 <strong>Aunts and cousins</strong>: Follow similar patterns of
 eventual decline</li>
+<li>
+<strong>nieces</strong>: similar patterns as daughters.</li>
 </ul>
 <blockquote>
 <p>Note that we are working in a time-invariant framework. You can think
@@ -700,22 +692,20 @@ fascinating patterns in family size and composition throughout life:</p>
 <ol style="list-style-type: decimal">
 <li>
 <strong>Early life</strong>: Family consists primarily of mothers,
-grandmothers, aunts, and sisters</li>
+grandmothers, aunts, cousins, and sisters</li>
 <li>
-<strong>Young adulthood (20s-30s)</strong>: Total family size
-increases as daughters are born</li>
+<strong>Young and middle adulthood (20s-40s)</strong>: Total family
+size increases as daughters and nieces are born</li>
 <li>
-<strong>Middle age (40s-50s)</strong>: Another increase as
-granddaughters arrive, while older relatives (mothers, grandmothers)
-begin to disappear</li>
-<li>
-<strong>Older age (60s+)</strong>: Family composition shifts
-dramatically toward descendants (daughters, granddaughters,
+<strong>Late adulthood and Older (50s+)</strong>: Even though
+granddaughters and granddaughters are born, while older relatives
+(mothers, aunts, grandmothers) begin to disappear. Family composition
+shifts dramatically toward descendants (daughters, granddaughters,
 great-granddaughters)</li>
 </ol>
-<p>The total family size (black line) shows an interesting U-shape,
-first declining as older relatives die, then rising again as new
-generations are born.</p>
+<p>Therefore, the total family size (black line) shows an interesting
+U-shape, first declining as older relatives die, then rising again as
+new generations are born.</p>
 </div>
 </div>
 <div class="section level2">
@@ -752,13 +742,14 @@ around age 85-95</li>
 <strong>Daughters</strong>: Mostly in their 30s and 40s</li>
 <li>
 <strong>Granddaughters</strong>: Predominantly young, between ages
-5-20</li>
+0-15</li>
 <li>
 <strong>Sisters</strong>: Close to Focal’s own age (65)</li>
 <li>
-<strong>Nieces</strong>: Mostly in their 40s and 50s</li>
+<strong>Nieces</strong>: Mostly in their 30s and 40s, similar to
+daughters</li>
 <li>
-<strong>Cousins</strong>: Similar in age to Focal</li>
+<strong>Cousins</strong>: Close to Focal’s own age (65)</li>
 </ul>
 <p>Understanding age distributions is crucial for estimating care needs,
 support systems, and intergenerational transfers within families.</p>
@@ -782,18 +773,21 @@ siblings, cousins)</li>
 <li>Matrix population models provide a powerful framework for
 understanding these dynamics</li>
 </ol>
-<p>In real-world applications, these models can inform: - Planning for
-eldercare needs - Understanding support systems for young families -
-Estimating intergenerational wealth transfers - Forecasting demographic
-dependency ratios</p>
-<p>Advanced extensions to this model could include: - Two-sex models
-(tracking both male and female relatives) - Time-varying models
-(accounting for historical demographic change) - Stochastic models
-(incorporating uncertainty)</p>
 </div>
 <div class="section level2">
-<h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
+<h2 class="unnumbered" id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
 </h2>
+<div id="refs" class="references csl-bib-body hanging-indent" entry-spacing="0">
+<div id="ref-caswell_formal_2019" class="csl-entry">
+Caswell, Hal. 2019. <span>“The Formal Demography of Kinship:
+<span>A</span> Matrix Formulation.”</span> <em>Demographic Research</em>
+41 (September): 679–712. <a href="https://doi.org/10.4054/DemRes.2019.41.24" class="external-link">https://doi.org/10.4054/DemRes.2019.41.24</a>.
+</div>
+<div id="ref-Keyfitz2005" class="csl-entry">
+Keyfitz, Nathan, Hal Caswell, et al. 2005. <em>Applied Mathematical
+Demography</em>. Vol. 47. Springer.
+</div>
+</div>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>

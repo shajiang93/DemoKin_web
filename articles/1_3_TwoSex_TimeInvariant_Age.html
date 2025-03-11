@@ -117,29 +117,27 @@ availability by sex.</p>
 <div class="section level2">
 <h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
 </h2>
-<p>Kinship networks are shaped by fundamental demographic processes that
-differ substantially between males and females. While one-sex models
-provide valuable insights, they ignore these sex differences, which can
-lead to incomplete or biased understandings of kinship dynamics. Two-sex
-kinship models address this limitation by incorporating sex-specific
-demographic rates and tracing both male and female lineages.</p>
+<p>Demographic processes fundamental to kinship formation vary
+significantly between males and females. While one-sex models offer
+valuable insights into family structures, they overlook these sex
+differences, which can lead to incomplete understanding of kinship
+dynamics. Two-sex kinship models address this limitation by
+incorporating sex-specific demographic rates and tracing both male and
+female lineages.</p>
 <p>Key advantages of two-sex models include:</p>
 <ul>
-<li>Accounting for sex differences in mortality (females generally live
-longer than males)</li>
-<li>Incorporating sex-specific fertility patterns (males often reproduce
-at later ages)</li>
-<li>Enabling analysis of kin availability by sex (important for
-understanding care relationships)</li>
+<li>Accounting for sex differences in mortality</li>
+<li>Incorporating sex-specific fertility patterns</li>
+<li>Enabling analysis of kin availability by sex</li>
 <li>Allowing for the exploration of sex ratios within kinship
 networks</li>
 <li>Providing more realistic estimates of kin availability across the
 life course</li>
 </ul>
 <p>In this vignette, we will implement a <strong>two-sex time-invariant
-kinship model</strong>, outlined in Caswell and Song <span class="citation">[-@caswell_formal_2022]</span>, using the
-<code>DemoKin</code> package to understand how sex-specific demographic
-patterns shape family structures.</p>
+kinship model</strong>, outlined in Caswell <span class="citation">(2022)</span>, using the <code>DemoKin</code> package
+to understand how sex-specific demographic patterns shape family
+structures.</p>
 <div class="section level3">
 <h3 id="preparation">Package Installation<a class="anchor" aria-label="anchor" href="#preparation"></a>
 </h3>
@@ -231,7 +229,7 @@ mortality and fertility rates:</p>
 <span>  <span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_wrap.html" class="external-link">facet_wrap</a></span><span class="op">(</span><span class="op">~</span> <span class="va">risk</span>, scales <span class="op">=</span> <span class="st">"free_y"</span><span class="op">)</span> <span class="op">+</span> </span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_bw</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<p><img src="1_3_TwoSex_TimeInvariant_Age_files/figure-html/sex_differences-1.png" width="2400" style="display: block; margin: auto;"></p>
+<p><img src="1_3_TwoSex_TimeInvariant_Age_files/figure-html/sex_differences-1.png" width="3000" style="display: block; margin: auto;"></p>
 <p><strong>Interpretation</strong>: The graphs reveal important sex
 differences in demographic rates:</p>
 <ul>
@@ -240,11 +238,10 @@ are nearly identical between males and females (difference of only
 0.01), the age patterns differ substantially. Male fertility occurs at
 later ages and has a wider distribution, reflecting the tendency for men
 to father children at older ages compared to women.</p></li>
-<li><p><strong>Survival probabilities</strong>: Females have
-consistently higher survival probabilities at all adult ages, with the
-gap widening in older ages. This pattern leads to sex imbalances in
-older populations and affects the availability of different types of
-relatives.</p></li>
+<li><p><strong>Survival probabilities</strong>: Females have higher
+survival probabilities at most of adult and old ages. This pattern leads
+to sex imbalances in older populations and affects the availability of
+different types of relatives.</p></li>
 </ul>
 <p>These sex differences in demographic rates will shape kinship
 networks in ways that one-sex models cannot capture.</p>
@@ -284,7 +281,7 @@ across the life course of a female focal individual:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Group specific kin types and filter for key relationships</span></span>
 <span><span class="va">kin_out</span> <span class="op">&lt;-</span> <span class="va">kin_result</span><span class="op">$</span><span class="va">kin_summary</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>kin <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/case_when.html" class="external-link">case_when</a></span><span class="op">(</span><span class="va">kin</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"s"</span>, <span class="st">"s"</span><span class="op">)</span> <span class="op">~</span> <span class="st">"s"</span>,      <span class="co"># Siblings</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>kin <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/case_when.html" class="external-link">case_when</a></span><span class="op">(</span><span class="va">kin</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"ys"</span>, <span class="st">"os"</span><span class="op">)</span> <span class="op">~</span> <span class="st">"s"</span>,      <span class="co"># Siblings</span></span>
 <span>                         <span class="va">kin</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"ya"</span>, <span class="st">"oa"</span><span class="op">)</span> <span class="op">~</span> <span class="st">"a"</span>,    <span class="co"># Aunts/uncles</span></span>
 <span>                         <span class="cn">TRUE</span> <span class="op">~</span> <span class="va">kin</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">kin</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"d"</span>, <span class="st">"m"</span>, <span class="st">"gm"</span>, <span class="st">"ggm"</span>, <span class="st">"s"</span>, <span class="st">"a"</span><span class="op">)</span><span class="op">)</span>     <span class="co"># Select key relationships</span></span>
@@ -315,7 +312,7 @@ course:</p>
 <ul>
 <li>
 <strong>Parents (m)</strong>: Fathers (blue) die earlier than
-mothers (pink), leading to a predominance of mothers at older ages</li>
+mothers (red), leading to a predominance of mothers at older ages</li>
 <li>
 <strong>Grandparents (gm)</strong>: Even at birth, grandmothers
 outnumber grandfathers due to mortality in the grandparental
@@ -358,10 +355,17 @@ understand how relationship codes work:</p>
 <span><span class="co">## <span style="color: #949494;"># ℹ 2 more variables: count_cum_dead &lt;dbl&gt;, mean_age_lost &lt;dbl&gt;</span></span></span></code></pre>
 <p>The function uses the same relationship codes as the one-sex model
 (see <code>demokin_codes()</code>), but now each relative has a
-specified sex. For example: - <code>kin = "d", sex_kin = "f"</code>
-refers to daughters - <code>kin = "d", sex_kin = "m"</code> refers to
-sons - <code>kin = "m", sex_kin = "f"</code> refers to mothers -
-<code>kin = "m", sex_kin = "m"</code> refers to fathers</p>
+specified sex. For example:</p>
+<ul>
+<li>
+<code>kin = "d", sex_kin = "f"</code> refers to daughters</li>
+<li>
+<code>kin = "d", sex_kin = "m"</code> refers to sons</li>
+<li>
+<code>kin = "m", sex_kin = "f"</code> refers to mothers</li>
+<li>
+<code>kin = "m", sex_kin = "m"</code> refers to fathers</li>
+</ul>
 <p>This coding system allows for flexible analysis of specific relative
 types while maintaining compatibility with the one-sex model.</p>
 </div>
@@ -424,14 +428,14 @@ relatives predominate.</p>
 <p>The experience of losing relatives differs by the sex of those
 relatives. Let’s examine how the timing of kin loss varies by sex:</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Visualize cumulative dead kin by sex</span></span>
+<code class="sourceCode R"><span><span class="co"># Visualize dead kin by sex</span></span>
 <span><span class="va">kin_out</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">kin</span>, <span class="va">sex_kin</span>, <span class="va">age_focal</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarise</a></span><span class="op">(</span>count <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">count_dead</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">age_focal</span>, <span class="va">count</span>, color <span class="op">=</span> <span class="va">sex_kin</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span>linewidth <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span></span>
-<span>    title <span class="op">=</span> <span class="st">"Cumulative number of deceased relatives by sex"</span>,</span>
+<span>    title <span class="op">=</span> <span class="st">"Number of deceased relatives by sex"</span>,</span>
 <span>    subtitle <span class="op">=</span> <span class="st">"Female focal individual, France 2012"</span>,</span>
 <span>    x <span class="op">=</span> <span class="st">"Age of focal individual"</span>,</span>
 <span>    y <span class="op">=</span> <span class="st">"Number of deceased relatives"</span>,</span>
@@ -449,17 +453,16 @@ of losing relatives differs by sex:</p>
 <ul>
 <li>
 <strong>Parents</strong>: The loss of fathers (blue) occurs earlier
-than the loss of mothers (pink)</li>
+than the loss of mothers (red)</li>
 <li>
-<strong>Grandparents</strong>: Male grandparents are often lost
-before birth or early in life, while female grandparents tend to be lost
-later</li>
+<strong>Grandparents</strong>: Grandfather are often lost before
+birth or early in life, while grandmothers tend to be lost later</li>
 <li>
-<strong>Siblings</strong>: Male siblings are lost at higher rates
-throughout life</li>
+<strong>Siblings</strong>: Brothers are lost at higher rates than
+sisters before old ages (75+)</li>
 <li>
-<strong>Children</strong>: While rare, the loss of male children
-occurs at higher rates than female children</li>
+<strong>Children</strong>: While rare, the loss of sons occurs at
+higher rates than daughters</li>
 </ul>
 <p>Understanding these patterns is important for studying bereavement
 experiences and their impacts across the life course.</p>
@@ -492,52 +495,39 @@ kinship structures. Two-sex models can capture these effects.</p></li>
 </ol>
 </div>
 <div class="section level2">
-<h2 id="extending-the-two-sex-model">Extending the Two-Sex Model<a class="anchor" aria-label="anchor" href="#extending-the-two-sex-model"></a>
-</h2>
-<p>The two-sex time-invariant model can be extended in several ways:</p>
-<ol style="list-style-type: decimal">
-<li>
-<strong>Time-varying rates</strong>: Incorporating historical
-changes in sex-specific rates</li>
-<li>
-<strong>Male focal individuals</strong>: Analyzing kinship from male
-perspectives</li>
-<li>
-<strong>Alternative family forms</strong>: Incorporating
-non-biological relationships</li>
-<li>
-<strong>Regional variations</strong>: Exploring how sex-specific
-patterns vary across contexts</li>
-</ol>
-<p>The <code>DemoKin</code> package provides the flexibility to explore
-these extensions, allowing for comprehensive analysis of kinship
-dynamics.</p>
-</div>
-<div class="section level2">
 <h2 id="conclusion">Conclusion<a class="anchor" aria-label="anchor" href="#conclusion"></a>
 </h2>
 <p>In this vignette, we’ve explored how to implement two-sex kinship
 models using the <code>DemoKin</code> package. By incorporating
-sex-specific mortality and fertility rates, these models provide more
-realistic representations of kinship networks, revealing important
-patterns that one-sex models cannot capture.</p>
-<p>Key insights include:</p>
+sex-specific mortality and fertility rates, these models reveal
+important patterns that one-sex models cannot capture:</p>
 <ol style="list-style-type: decimal">
-<li>Sex differences in mortality lead to female predominance among older
-relatives</li>
-<li>The timing of kin loss differs systematically by the sex of
-relatives</li>
-<li>Sex ratios within kinship networks vary by relationship type and
+<li>Female predominance among older relatives due to sex differences in
+mortality</li>
+<li>Systematic differences in the timing of kin loss by sex, with male
+kin typically lost earlier</li>
+<li>Varying sex ratios within kinship networks by relationship type and
 age</li>
-<li>Two-sex models provide critical information for understanding care
-relationships and support networks</li>
+<li>Distinct age distributions of relatives by sex</li>
 </ol>
-<p>These insights have important implications for social policy, care
-planning, and understanding demographic change in an aging world.</p>
+<p>These insights have significant implications for understanding care
+relationships, intergenerational transfers, and support systems in aging
+societies. The two-sex approach substantially enhances our understanding
+of how gender shapes family structures across the life course, providing
+a more realistic foundation for both research and policy
+development.</p>
 </div>
 <div class="section level2">
-<h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
+<h2 class="unnumbered" id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
 </h2>
+<div id="refs" class="references csl-bib-body hanging-indent" entry-spacing="0">
+<div id="ref-caswell_formal_2022" class="csl-entry">
+Caswell, Hal. 2022. <span>“The Formal Demography of Kinship
+<span>IV</span>: <span>Two</span>-Sex Models and Their
+Approximations.”</span> <em>Demographic Research</em> 47 (September):
+359–96. <a href="https://doi.org/10.4054/DemRes.2022.47.13" class="external-link">https://doi.org/10.4054/DemRes.2022.47.13</a>.
+</div>
+</div>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>
