@@ -534,7 +534,7 @@ kin_out_2020_2090$kin_summary %>%
   filter(cohort == 2020) %>%
   rename(kin = group) %>% 
   # rename_kin(sex = "2sex") %>% 
-  summarise(count = sum(count), .by = c(kin_label, stage_kin, age_focal)) %>%
+  summarise(count = sum(count), .by = c(kin, stage_kin, age_focal)) %>%
   ggplot(aes(x = age_focal, y = count, fill = stage_kin)) +
   geom_area(colour = "black") +
   labs(
@@ -544,7 +544,7 @@ kin_out_2020_2090$kin_summary %>%
     x = "Age of focal individual",
     fill = "Educational attainment"
   ) +
-  facet_wrap(. ~ kin_label) +
+  facet_wrap(. ~ kin) +
   theme_bw() +
   theme(legend.position = "bottom")
 ```
@@ -578,7 +578,7 @@ kin_out_2020_2090$kin_full %>%
     fill = "Educational attainment",
     color = "Educational attainment"
   ) +
-  facet_wrap(. ~ kin_label) +
+  facet_wrap(. ~ kin) +
   theme_bw() +
   theme(
     axis.text.x = element_text(angle = 90, vjust = 0.5),
@@ -605,7 +605,7 @@ kin_out_2020_2090$kin_summary %>%
   ) %>% 
   rename(kin = group) %>% 
   # rename_kin(sex = "2sex") %>% 
-  summarise(count = sum(count), .by = c(stage_kin, kin_label, year)) %>%
+  summarise(count = sum(count), .by = c(stage_kin, kin, year)) %>%
   ggplot(aes(x = year, y = count, fill = stage_kin)) +
   geom_area(colour = "black") +
   labs(
@@ -615,7 +615,7 @@ kin_out_2020_2090$kin_summary %>%
     x = "Year",
     fill = "Educational attainment"
   ) +
-  facet_grid(. ~ kin_label) +
+  facet_grid(. ~ kin) +
   theme_bw() +
   theme(legend.position = "bottom")
 ```
