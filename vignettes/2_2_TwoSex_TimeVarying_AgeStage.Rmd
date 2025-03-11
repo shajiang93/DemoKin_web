@@ -511,7 +511,7 @@ kin_out_2020_2090$kin_summary %>%
   filter(group != "Focal") %>% 
   filter(cohort == 2020) %>%
   rename(kin = group) %>% 
-  rename_kin(sex = "2sex") %>% 
+  # rename_kin(sex = "2sex") %>% 
   summarise(count = sum(count), .by = c(stage_kin, age_focal)) %>%
   ggplot(aes(x = age_focal, y = count, fill = stage_kin)) +
   geom_area(colour = "black") +
@@ -533,7 +533,7 @@ kin_out_2020_2090$kin_summary %>%
   filter(group %in% c("d", "gd", "m", "gm")) %>% 
   filter(cohort == 2020) %>%
   rename(kin = group) %>% 
-  rename_kin(sex = "2sex") %>% 
+  # rename_kin(sex = "2sex") %>% 
   summarise(count = sum(count), .by = c(kin_label, stage_kin, age_focal)) %>%
   ggplot(aes(x = age_focal, y = count, fill = stage_kin)) +
   geom_area(colour = "black") +
@@ -588,10 +588,10 @@ kin_out_2020_2090$kin_full %>%
 
 **Interpretation**: This visualization reveals the evolving educational composition of different types of relatives across the life course for a woman born in 2020 in Singapore:
 
-- **Children**: Educational attainment increases with Focal's age, showing a shift towards higher education levels
-- **Grandchildren**: Emerge later in life with a more diverse educational profile
-- **Grandparents**: Predominantly have upper secondary (blue) and lower secondary (teal) education
-- **Parents**: Similar to grandparents, with a concentration of upper secondary education
+- **Children** (d): Educational attainment increases with Focal's age, showing a shift towards higher education levels
+- **Grandchildren** (gd): Emerge later in life with a more diverse educational profile
+- **Grandparents** (gm): Predominantly have upper secondary (blue) and lower secondary (teal) education
+- **Parents** (m): Similar to grandparents, with a concentration of upper secondary education
 
 ### Period Analysis of Kin by Education {#education-period-analysis}
 
@@ -622,10 +622,10 @@ kin_out_2020_2090$kin_summary %>%
 
 **Interpretation**:
 
-- **Children**: Concentrated between ages 30-50, with upper secondary education (blue) being most prevalent
-- **Grandchildren**: Mostly young (under 20), with emerging educational diversity
-- **Grandparents**: No longer living at this point
-- **Parents**: Clustered around ages 80-90, with upper secondary and lower secondary education dominating
+- **Children** (d): Concentrated between ages 30-50, with upper secondary education (blue) being most prevalent
+- **Grandchildren** (gd): Mostly young (under 20), with emerging educational diversity
+- **Grandparents** (gm): No longer living at this point
+- **Parents** (m): Clustered around ages 80-90, with upper secondary and lower secondary education dominating
 
 # Limitations and Assumptions {#limitations}
 
