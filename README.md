@@ -1,7 +1,7 @@
 # DemoKin: Matrix-based Kinship Models
 
-[![R-CMD-check](https://github.com/shajiang93/DemoKin_web/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/shajiang93/DemoKin_web/actions)
-[![pkgdown](https://github.com/shajiang93/DemoKin_web/workflows/pkgdown.yaml/badge.svg)](https://github.com/shajiang93/DemoKin_web/actions)
+[![R-CMD-check](https://github.com/shajiang93/DemoKin_web/workflows/R-CMD-check/badge.svg)](https://github.com/shajiang93/DemoKin_web/actions)
+[![pkgdown](https://github.com/shajiang93/DemoKin_web/workflows/pkgdown/badge.svg)](https://github.com/shajiang93/DemoKin_web/actions)
 
 DemoKin is an R package for the demographic analysis of kinship networks using matrix-based models. It implements methods developed by Caswell and colleagues for estimating the number and age distribution of relatives under various demographic assumptions.
 
