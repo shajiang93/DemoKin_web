@@ -566,7 +566,7 @@ kin_out_2020_2090$kin_full %>%
     cohort == 2020
   ) %>%
   rename(kin = group) %>% 
-  rename_kin("2sex") %>% 
+  # rename_kin("2sex") %>% 
   ggplot(aes(x = age_kin, y = count, color = stage_kin, fill = stage_kin)) +
   geom_bar(position = "stack", stat = "identity") +
   scale_x_continuous(breaks = c(0,10,20,30,40,50,60,70,80,90,100)) +
@@ -604,7 +604,7 @@ kin_out_2020_2090$kin_summary %>%
     age_focal == 60
   ) %>% 
   rename(kin = group) %>% 
-  rename_kin(sex = "2sex") %>% 
+  # rename_kin(sex = "2sex") %>% 
   summarise(count = sum(count), .by = c(stage_kin, kin_label, year)) %>%
   ggplot(aes(x = year, y = count, fill = stage_kin)) +
   geom_area(colour = "black") +
